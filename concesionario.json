@@ -1,0 +1,69 @@
+{
+    "autos": [
+        {
+            "id": 1,
+            "patente": "AB123CD",
+            "marca": "Chevrolet",
+            "modelo": "Corsa Classic",
+            "anio": 2014,
+            "kilometros": 120000,
+            "precio": 4500000,
+            "estado": "disponible",
+            "fecha_ingreso": "2026-03-15"
+        },
+        {
+            "id": 2,
+            "patente": "XY987ZZ",
+            "marca": "Ford",
+            "modelo": "Fiesta",
+            "anio": 2018,
+            "kilometros": 85000,
+            "precio": 6200000,
+            "estado": "reservado",
+            "fecha_ingreso": "2026-04-01"
+        }
+    ],
+    "clientes": [
+        {
+            "id": 1,
+            "dni": "32456789",
+            "nombre_completo": "María González",
+            "telefono": "345-4123456",
+            "email": "maria@mail.com",
+            "localidad": "Federación",
+            "que_busca": "auto familiar usado"
+        },
+        {
+            "id": 2,
+            "dni": "20123456",
+            "nombre_completo": "Juan Pérez",
+            "telefono": "345-4987654",
+            "email": "juan@mail.com",
+            "localidad": "Concordia",
+            "que_busca": "una camioneta 4x4"
+        }
+    ],
+    "vendedores": [
+        {
+            "id": 1,
+            "dni": "28456789",
+            "nombre_completo": "Carlos Ríos",
+            "telefono": "345-4987654",
+            "email": "carlos@autosdellitoral.com",
+            "comision_porcentaje": 3.0,
+            "fecha_ingreso": "2020-06-01",
+            "estado": "activo"
+        },
+        {
+            "id": 2,
+            "dni": "35111222",
+            "nombre_completo": "Ana Martínez",
+            "telefono": "345-4111222",
+            "email": "ana@autosdellitoral.com",
+            "comision_porcentaje": 3.5,
+            "fecha_ingreso": "2022-01-01",
+            "estado": "activo"
+        }
+    ],
+    "ventas": []
+}
