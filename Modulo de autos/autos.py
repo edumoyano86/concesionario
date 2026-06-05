@@ -7,9 +7,7 @@ contador_id_autos = 1
 ESTADOS_VALIDOS = ("disponible", "reservado", "vendido", "en taller")
 ARCHIVO_JSON    = "stock_autos.json"
 
-# ──────────────────────────────────────────────
 #  COLORES
-# ──────────────────────────────────────────────
 
 VERDE    = "\033[92m"
 ROJO     = "\033[91m"
@@ -26,10 +24,7 @@ def error(msg): print(f"{ROJO}❌ {msg}{RESET}")
 def aviso(msg): print(f"{AMARILLO}⚠️  {msg}{RESET}")
 def info(msg):  print(f"{CIAN}🔍 {msg}{RESET}")
 
-
-# ──────────────────────────────────────────────
 #  JSON
-# ──────────────────────────────────────────────
 
 def cargar_desde_json():
     # Lee el archivo JSON y carga los autos en memoria al iniciar.
@@ -59,10 +54,7 @@ def guardar_en_json():
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
 
-
-# ──────────────────────────────────────────────
 #  MENÚ
-# ──────────────────────────────────────────────
 
 def menu_autos():
     cargar_desde_json()  # Carga los datos al entrar al módulo
@@ -77,7 +69,7 @@ def menu_autos():
         print(f"  {CIAN}5.{RESET} Dar de baja un auto")
         print(f"  {GRIS}9. Volver al menú principal{RESET}")
         print(f"{AZUL}══════════════════════════════════════{RESET}")
-        opcion = input(f"{BLANCO}¿Qué querés hacer? {RESET}").strip()
+        opcion = input(f"{BLANCO}¿Qué querés hacer? {RESET}").strip()  # Sin el strip() no funciona si tiene espacios, tira error
 
         if opcion == "1":
             cargar_auto()
@@ -94,10 +86,7 @@ def menu_autos():
         else:
             aviso("Opción inválida, intentá de nuevo.")
 
-
-# ──────────────────────────────────────────────
 #  CARGAR
-# ──────────────────────────────────────────────
 
 def cargar_auto():
     global contador_id_autos
@@ -140,10 +129,7 @@ def cargar_auto():
     guardar_en_json()  # Guarda después de agregar
     ok(f"Auto #{auto['id']} cargado correctamente.")
 
-
-# ──────────────────────────────────────────────
 #  LISTAR (con filtros)
-# ──────────────────────────────────────────────
 
 def listar_autos():
     if not autos:
@@ -198,10 +184,7 @@ def _aplicar_filtros(marca, estado, precio_min, precio_max):
         resultado.append(a)
     return resultado
 
-
-# ──────────────────────────────────────────────
 #  BUSCAR
-# ──────────────────────────────────────────────
 
 def buscar_auto():
     print(f"\n{NEGRITA}── Buscar auto ──{RESET}")
@@ -230,10 +213,7 @@ def _mostrar_auto_detalle(auto):
     for clave, valor in auto.items():
         print(f"  {CIAN}{clave}:{RESET} {valor}")
 
-
-# ──────────────────────────────────────────────
 #  CAMBIAR ESTADO
-# ──────────────────────────────────────────────
 
 def cambiar_estado_auto():
     print(f"\n{NEGRITA}── Cambiar estado ──{RESET}")
@@ -257,10 +237,7 @@ def cambiar_estado_auto():
     guardar_en_json()  # Guarda después de modificar
     ok(f"Estado actualizado a '{nuevo_estado}'.")
 
-
-# ──────────────────────────────────────────────
 #  DAR DE BAJA
-# ──────────────────────────────────────────────
 
 def dar_de_baja_auto():
     print(f"\n{NEGRITA}── Dar de baja un auto ──{RESET}")
@@ -281,10 +258,7 @@ def dar_de_baja_auto():
     else:
         print(f"{GRIS}↩️  Operación cancelada.{RESET}")
 
-
-# ──────────────────────────────────────────────
 #  HELPERS INTERNOS
-# ──────────────────────────────────────────────
 
 def _buscar_por_id(id_auto):
     for a in autos:

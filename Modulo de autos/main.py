@@ -1,10 +1,10 @@
 import os
 from autos import menu_autos
 
-# from clientes import menu_clientes        # descomentar cuando esté listo
-# from vendedores import menu_vendedores    # descomentar cuando esté listo
-# from ventas import menu_ventas            # descomentar cuando esté listo
-# from reservas import menu_reservas        # descomentar cuando esté listo
+# from clientes import menu_clientes     
+# from vendedores import menu_vendedores 
+# from ventas import menu_ventas         
+# from reservas import menu_reservas     
 
 VERDE    = "\033[92m"
 ROJO     = "\033[91m"
@@ -21,10 +21,7 @@ def limpiar_pantalla():
 
 def aviso(msg): print(f"{AMARILLO}⚠️  {msg}{RESET}")
 
-
-# ──────────────────────────────────────────────
 #  SUBMENÚ: BASE DE CLIENTES
-# ──────────────────────────────────────────────
 
 def menu_base_clientes():
     while True:
@@ -61,10 +58,7 @@ def menu_base_clientes():
                 aviso("Opción no válida. Por favor, intente de nuevo.")
                 input(f"{GRIS}  Presione Enter para continuar...{RESET}")
 
-
-# ──────────────────────────────────────────────
 #  SUBMENÚ: REGISTRAR OPERACIONES
-# ──────────────────────────────────────────────
 
 def menu_operaciones():
     while True:
@@ -101,10 +95,7 @@ def menu_operaciones():
                 aviso("Opción no válida. Por favor, intente de nuevo.")
                 input(f"{GRIS}  Presione Enter para continuar...{RESET}")
 
-
-# ──────────────────────────────────────────────
 #  MENÚ PRINCIPAL
-# ──────────────────────────────────────────────
 
 def iniciar_sistema_menu():
     while True:
@@ -112,8 +103,7 @@ def iniciar_sistema_menu():
         ancho = 50
 
         print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
-        print(f"{ROJO}{NEGRITA}{'🚗  AUTOS DEL LITORAL  🚗':^{ancho}}{RESET}")
-        print(f"{AZUL}{NEGRITA}{'SISTEMA DE GESTIÓN':^{ancho}}{RESET}")
+        print(f"{ROJO}{NEGRITA}{'🚗  AUTOS DEL LITORAL — Sistema v1.0':^{ancho}}{RESET}")
         print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
         print()
         print(f"  {CIAN}[1]{RESET} Stock de vehículos {GRIS}──  🚗 Autos en stock{RESET}")
