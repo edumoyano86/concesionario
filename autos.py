@@ -1,5 +1,8 @@
 import json
 from datetime import date
+from rich.console import Console
+
+console = Console(color_system="standard")
 
 autos = []
 contador_id_autos = 1
@@ -7,49 +10,41 @@ contador_id_autos = 1
 ESTADOS_VALIDOS = ("disponible", "reservado", "vendido", "en taller")
 ARCHIVO_JSON    = "concesionario.json"
 
-#  COLORES
+def ok(msg):    console.print(f"[green]✅ {msg}[/]")
+def error(msg): console.print(f"[red]❌ {msg}[/]")
+def aviso(msg): console.print(f"[yellow]⚠️  {msg}[/]")
+def info(msg):  console.print(f"[cyan]🔍 {msg}[/]")
 
-VERDE    = "\033[92m"
-ROJO     = "\033[91m"
-AMARILLO = "\033[93m"
-AZUL     = "\033[94m"
-CIAN     = "\033[96m"
-BLANCO   = "\033[97m"
-GRIS     = "\033[90m"
-RESET    = "\033[0m"
-NEGRITA  = "\033[1m"
+def _formatear_precio(valor):
+    return f"${valor:,}".replace(",", ".")
 
-def ok(msg):    print(f"{VERDE}✅ {msg}{RESET}")
-def error(msg): print(f"{ROJO}❌ {msg}{RESET}")
-def aviso(msg): print(f"{AMARILLO}⚠️  {msg}{RESET}")
-def info(msg):  print(f"{CIAN}🔍 {msg}{RESET}")
+def _formatear_kilometros(valor):
+    return f"{valor:,}".replace(",", ".")
 
 #  JSON
 
 def cargar_desde_json():
-    # Lee el archivo JSON y carga los autos en memoria al iniciar.
     global autos, contador_id_autos
     try:
         with open(ARCHIVO_JSON, "r", encoding="utf-8") as f:
             datos = json.load(f)
         for a in datos:
-            a["fecha_ingreso"] = date.fromisoformat(a["fecha_ingreso"])  # str → date
+            a["fecha_ingreso"] = date.fromisoformat(a["fecha_ingreso"])
         autos = datos
         if autos:
             contador_id_autos = max(a["id"] for a in autos) + 1
     except FileNotFoundError:
-        autos = []  # Si no existe el archivo, arranca vacío
+        autos = []
     except json.JSONDecodeError:
         aviso("El archivo JSON estaba dañado. Se arranca con lista vacía.")
         autos = []
 
 
 def guardar_en_json():
-    # Guarda el estado actual de la lista en el archivo JSON.
     datos = []
     for a in autos:
         copia = a.copy()
-        copia["fecha_ingreso"] = a["fecha_ingreso"].isoformat()  # date → str
+        copia["fecha_ingreso"] = a["fecha_ingreso"].isoformat()
         datos.append(copia)
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
@@ -57,19 +52,19 @@ def guardar_en_json():
 #  MENÚ
 
 def menu_autos():
-    cargar_desde_json()  # Carga los datos al entrar al módulo
+    cargar_desde_json()
     while True:
-        print(f"\n{AZUL}{NEGRITA}══════════════════════════════════════{RESET}")
-        print(f"{AZUL}{NEGRITA}  🚗 AUTOS EN STOCK{RESET}")
-        print(f"{AZUL}{NEGRITA}══════════════════════════════════════{RESET}")
-        print(f"  {CIAN}1.{RESET} Cargar un auto nuevo")
-        print(f"  {CIAN}2.{RESET} Ver listado de autos")
-        print(f"  {CIAN}3.{RESET} Buscar un auto")
-        print(f"  {CIAN}4.{RESET} Cambiar estado de un auto")
-        print(f"  {CIAN}5.{RESET} Dar de baja un auto")
-        print(f"  {GRIS}9. Volver al menú principal{RESET}")
-        print(f"{AZUL}══════════════════════════════════════{RESET}")
-        opcion = input(f"{BLANCO}¿Qué querés hacer? {RESET}").strip()  # Sin el strip() no funciona si tiene espacios, tira error
+        console.print(f"\n[bold blue]══════════════════════════════════════[/]")
+        console.print(f"[bold blue]  🚗 AUTOS EN STOCK[/]")
+        console.print(f"[bold blue]══════════════════════════════════════[/]")
+        console.print(f"  [cyan]1.[/] Cargar un auto nuevo")
+        console.print(f"  [cyan]2.[/] Ver listado de autos")
+        console.print(f"  [cyan]3.[/] Buscar un auto")
+        console.print(f"  [cyan]4.[/] Cambiar estado de un auto")
+        console.print(f"  [cyan]5.[/] Dar de baja un auto")
+        console.print(f"  [bright_black]9. Volver al menú principal[/]")
+        console.print(f"[blue]══════════════════════════════════════[/]")
+        opcion = console.input(f"[white]¿Qué querés hacer? [/]").strip()
 
         if opcion == "1":
             cargar_auto()
@@ -90,14 +85,14 @@ def menu_autos():
 
 def cargar_auto():
     global contador_id_autos
-    print(f"\n{NEGRITA}── Cargar auto nuevo ──{RESET}")
+    console.print(f"\n[bold]── Cargar auto nuevo ──[/]")
 
     patente = input("Patente: ").strip().upper()
     if _patente_existe(patente):
         error("Ya existe un auto con esa patente.")
         return
 
-    marca  = input("Marca: ").strip()
+    marca  = input("Marca: ").strip().upper()
     modelo = input("Modelo: ").strip()
 
     anio = _pedir_entero("Año: ")
@@ -126,7 +121,7 @@ def cargar_auto():
 
     autos.append(auto)
     contador_id_autos += 1
-    guardar_en_json()  # Guarda después de agregar
+    guardar_en_json()
     ok(f"Auto #{auto['id']} cargado correctamente.")
 
 #  LISTAR (con filtros)
@@ -136,7 +131,7 @@ def listar_autos():
         info("No hay autos cargados.")
         return
 
-    print(f"\n{NEGRITA}── Filtros (Enter para saltear) ──{RESET}")
+    console.print(f"\n[bold]── Filtros (Enter para saltear) ──[/]")
     marca_filtro  = input("Filtrar por marca: ").strip().lower()
     estado_filtro = input("Filtrar por estado (disponible/reservado/vendido/en taller): ").strip().lower()
     precio_min    = _pedir_entero_opcional("Precio mínimo: ")
@@ -148,26 +143,28 @@ def listar_autos():
         info("No se encontraron autos con esos filtros.")
         return
 
-    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} {'Modelo':<16} {'Año':<6} {'Km':<8} {'Precio':<12} {'Estado':<12} {'Ingreso'}"
-    print(f"\n{NEGRITA}{AZUL}{encabezado}{RESET}")
-    print(f"{AZUL}{'─' * 90}{RESET}")
+    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} [white]{'Modelo':<16}[/] [white]{'Año':<6}[/] [white]{'Km':<8}[/] {'Precio':<12} {'Estado':<12} [white]{'Ingreso'}[/]"
+    console.print(f"\n[blue]{encabezado}[/]", soft_wrap=True)
+    console.print(f"[blue]{'─' * 95}[/]", soft_wrap=True)
     for a in resultado:
         color_estado = _color_estado(a["estado"])
-        print(
-            f"{GRIS}{a['id']:<5}{RESET} {a['patente']:<10} {a['marca']:<12} {a['modelo']:<16} "
-            f"{a['anio']:<6} {a['kilometros']:<8} {VERDE}${a['precio']:<11}{RESET} "
-            f"{color_estado}{a['estado']:<12}{RESET} {a['fecha_ingreso']}"
+        console.print(
+            f"[bright_white]{a['id']:<5}[/] [bright_white]{a['patente']:<10}[/] [bright_white]{a['marca']:<12}[/] [bright_white]{a['modelo']:<16}[/] "
+            f"[bright_white]{a['anio']:<6}[/] [bright_white]{_formatear_kilometros(a['kilometros']):<8}[/] "
+            f"[green]{_formatear_precio(a['precio']):<12}[/] "
+            f"{color_estado}{a['estado'].upper():<12}[/] [bright_white]{a['fecha_ingreso']}[/]",
+            soft_wrap=True,
         )
 
 
 def _color_estado(estado):
     colores = {
-        "disponible": VERDE,
-        "reservado":  AMARILLO,
-        "vendido":    CIAN + NEGRITA,
-        "en taller":  ROJO,
+        "disponible": "[green]",
+        "reservado":  "[yellow]",
+        "vendido":    "[bold green]",
+        "en taller":  "[red]",
     }
-    return colores.get(estado, RESET)
+    return colores.get(estado, "")
 
 
 def _aplicar_filtros(marca, estado, precio_min, precio_max):
@@ -187,9 +184,9 @@ def _aplicar_filtros(marca, estado, precio_min, precio_max):
 #  BUSCAR
 
 def buscar_auto():
-    print(f"\n{NEGRITA}── Buscar auto ──{RESET}")
-    print(f"  {CIAN}1.{RESET} Por patente")
-    print(f"  {CIAN}2.{RESET} Por número interno")
+    console.print(f"\n[bold]── Buscar auto ──[/]")
+    console.print(f"  [cyan]1.[/] Por patente")
+    console.print(f"  [cyan]2.[/] Por número interno")
     criterio = input("Elegí: ").strip()
 
     if criterio == "1":
@@ -209,14 +206,18 @@ def buscar_auto():
 
 
 def _mostrar_auto_detalle(auto):
-    print(f"\n{NEGRITA}{AZUL}── Detalle del auto ──{RESET}")
+    console.print(f"\n[bold blue]── Detalle del auto ──[/]")
     for clave, valor in auto.items():
-        print(f"  {CIAN}{clave}:{RESET} {valor}")
+        if clave == "precio":
+            valor = _formatear_precio(valor)
+        elif clave in ("marca", "estado"):
+            valor = valor.upper()
+        console.print(f"  [cyan]{clave}:[/] {valor}")
 
 #  CAMBIAR ESTADO
 
 def cambiar_estado_auto():
-    print(f"\n{NEGRITA}── Cambiar estado ──{RESET}")
+    console.print(f"\n[bold]── Cambiar estado ──[/]")
     id_auto = _pedir_entero("Número interno del auto: ")
     auto = _buscar_por_id(id_auto) if id_auto is not None else None
 
@@ -225,8 +226,8 @@ def cambiar_estado_auto():
         return
 
     color = _color_estado(auto["estado"])
-    print(f"  Estado actual: {color}{auto['estado']}{RESET}")
-    print(f"  Estados posibles: {CIAN}{', '.join(ESTADOS_VALIDOS)}{RESET}")
+    console.print(f"  Estado actual: {color}{auto['estado'].upper()}[/]")
+    console.print(f"  Estados posibles: [cyan]{', '.join(ESTADOS_VALIDOS)}[/]")
     nuevo_estado = input("Nuevo estado: ").strip().lower()
 
     if nuevo_estado not in ESTADOS_VALIDOS:
@@ -234,13 +235,13 @@ def cambiar_estado_auto():
         return
 
     auto["estado"] = nuevo_estado
-    guardar_en_json()  # Guarda después de modificar
+    guardar_en_json()
     ok(f"Estado actualizado a '{nuevo_estado}'.")
 
 #  DAR DE BAJA
 
 def dar_de_baja_auto():
-    print(f"\n{NEGRITA}── Dar de baja un auto ──{RESET}")
+    console.print(f"\n[bold]── Dar de baja un auto ──[/]")
     id_auto = _pedir_entero("Número interno del auto: ")
     auto = _buscar_por_id(id_auto) if id_auto is not None else None
 
@@ -249,14 +250,14 @@ def dar_de_baja_auto():
         return
 
     _mostrar_auto_detalle(auto)
-    confirmacion = input(f"\n{AMARILLO}¿Confirmás la baja? (s/n): {RESET}").strip().lower()
+    confirmacion = console.input(f"\n[yellow]¿Confirmás la baja? (s/n): [/]").strip().lower()
 
     if confirmacion == "s":
         autos.remove(auto)
-        guardar_en_json()  # Guarda después de borrar
+        guardar_en_json()
         ok("Auto dado de baja correctamente.")
     else:
-        print(f"{GRIS}↩️  Operación cancelada.{RESET}")
+        console.print("[bright_black]↩️  Operación cancelada.[/]")
 
 #  HELPERS INTERNOS
 

@@ -1,25 +1,18 @@
 import os
 from autos import menu_autos
+from rich.console import Console
 
-# from clientes import menu_clientes     
-# from vendedores import menu_vendedores 
-# from ventas import menu_ventas         
-# from reservas import menu_reservas     
+console = Console(color_system="standard")
 
-VERDE    = "\033[92m"
-ROJO     = "\033[91m"
-AMARILLO = "\033[93m"
-AZUL     = "\033[94m"
-CIAN     = "\033[96m"
-BLANCO   = "\033[97m"
-GRIS     = "\033[90m"
-RESET    = "\033[0m"
-NEGRITA  = "\033[1m"
+# from clientes import menu_clientes
+# from vendedores import menu_vendedores
+# from ventas import menu_ventas
+# from reservas import menu_reservas
 
 def limpiar_pantalla():
     os.system('clear' if os.name != 'nt' else 'cls')
 
-def aviso(msg): print(f"{AMARILLO}⚠️  {msg}{RESET}")
+def aviso(msg): console.print(f"[yellow]⚠️  {msg}[/]")
 
 #  SUBMENÚ: BASE DE CLIENTES
 
@@ -27,36 +20,36 @@ def menu_base_clientes():
     while True:
         limpiar_pantalla()
         ancho = 50
-        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
-        print(f"{AZUL}{NEGRITA}{'👥  BASE DE CLIENTES':^{ancho}}{RESET}")
-        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
-        print()
-        print(f"  {CIAN}[1]{RESET} Clientes           {GRIS}──  👤 Gestión de clientes{RESET}")
-        print(f"  {CIAN}[2]{RESET} Vendedores         {GRIS}──  👔 Gestión de vendedores{RESET}")
-        print()
-        print(f"  {GRIS}[9] Volver al menú principal{RESET}")
-        print()
-        print(f"{GRIS}{'─' * ancho}{RESET}")
-        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print(f"[bold blue]{'👥  BASE DE CLIENTES':^{ancho}}[/]")
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Clientes           [bright_black]──  👤 Gestión de clientes[/]")
+        console.print(f"  [cyan][2][/] Vendedores         [bright_black]──  👔 Gestión de vendedores[/]")
+        console.print()
+        console.print(f"  [bright_black][9] Volver al menú principal[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
 
         match opc:
             case "1":
                 limpiar_pantalla()
-                print(f"{AMARILLO}⚠️  Módulo de Clientes — En desarrollo{RESET}")
-                print()
-                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                console.print("[yellow]⚠️  Módulo de Clientes — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
                 # menu_clientes()
             case "2":
                 limpiar_pantalla()
-                print(f"{AMARILLO}⚠️  Módulo de Vendedores — En desarrollo{RESET}")
-                print()
-                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                console.print("[yellow]⚠️  Módulo de Vendedores — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
                 # menu_vendedores()
             case "9":
                 break
             case _:
                 aviso("Opción no válida. Por favor, intente de nuevo.")
-                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
 
 #  SUBMENÚ: REGISTRAR OPERACIONES
 
@@ -64,36 +57,36 @@ def menu_operaciones():
     while True:
         limpiar_pantalla()
         ancho = 50
-        print(f"{VERDE}{NEGRITA}{'═' * ancho}{RESET}")
-        print(f"{VERDE}{NEGRITA}{'💰  REGISTRAR OPERACIONES':^{ancho}}{RESET}")
-        print(f"{VERDE}{NEGRITA}{'═' * ancho}{RESET}")
-        print()
-        print(f"  {CIAN}[1]{RESET} Ventas             {GRIS}──  💵 Registrar ventas{RESET}")
-        print(f"  {CIAN}[2]{RESET} Reservas           {GRIS}──  📌 Registrar reservas{RESET}")
-        print()
-        print(f"  {GRIS}[9] Volver al menú principal{RESET}")
-        print()
-        print(f"{GRIS}{'─' * ancho}{RESET}")
-        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
+        console.print(f"[bold green]{'═' * ancho}[/]")
+        console.print(f"[bold green]{'💰  REGISTRAR OPERACIONES':^{ancho}}[/]")
+        console.print(f"[bold green]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Ventas             [bright_black]──  💵 Registrar ventas[/]")
+        console.print(f"  [cyan][2][/] Reservas           [bright_black]──  📌 Registrar reservas[/]")
+        console.print()
+        console.print(f"  [bright_black][9] Volver al menú principal[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
 
         match opc:
             case "1":
                 limpiar_pantalla()
-                print(f"{AMARILLO}⚠️  Módulo de Ventas — En desarrollo{RESET}")
-                print()
-                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                console.print("[yellow]⚠️  Módulo de Ventas — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
                 # menu_ventas()
             case "2":
                 limpiar_pantalla()
-                print(f"{AMARILLO}⚠️  Módulo de Reservas — En desarrollo{RESET}")
-                print()
-                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                console.print("[yellow]⚠️  Módulo de Reservas — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
                 # menu_reservas()
             case "9":
                 break
             case _:
                 aviso("Opción no válida. Por favor, intente de nuevo.")
-                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
 
 #  MENÚ PRINCIPAL
 
@@ -102,19 +95,19 @@ def iniciar_sistema_menu():
         limpiar_pantalla()
         ancho = 50
 
-        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
-        print(f"{ROJO}{NEGRITA}{'🚗  AUTOS DEL LITORAL — Sistema v1.0':^{ancho}}{RESET}")
-        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
-        print()
-        print(f"  {CIAN}[1]{RESET} Stock de vehículos {GRIS}──  🚗 Autos en stock{RESET}")
-        print(f"  {CIAN}[2]{RESET} Base de clientes   {GRIS}──  👥 Clientes y vendedores{RESET}")
-        print(f"  {CIAN}[3]{RESET} Registrar operac.  {GRIS}──  💰 Ventas y reservas{RESET}")
-        print()
-        print(f"  {ROJO}[9] {GRIS}Salir del Programa{RESET}")
-        print()
-        print(f"{GRIS}{'─' * ancho}{RESET}")
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print(f"[bold red]{'🚗  AUTOS DEL LITORAL — Sistema v1.0':^{ancho}}[/]")
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Stock de vehículos [bright_black]──  🚗 Autos en stock[/]")
+        console.print(f"  [cyan][2][/] Base de clientes   [bright_black]──  👥 Clientes y vendedores[/]")
+        console.print(f"  [cyan][3][/] Registrar operac.  [bright_black]──  💰 Ventas y reservas[/]")
+        console.print()
+        console.print(f"  [red][9] [bright_black]Salir del Programa[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
 
-        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
 
         match opc:
             case "1":
@@ -125,14 +118,21 @@ def iniciar_sistema_menu():
                 menu_operaciones()
             case "9":
                 limpiar_pantalla()
-                print()
-                print(f"{AMARILLO}  👋  ¡Muchas gracias por usar el sistema!{RESET}")
-                print(f"{GRIS}  Hasta pronto.{RESET}")
-                print()
+                console.print()
+                console.print("[yellow]  👋  ¡Muchas gracias por usar el sistema![/]")
+                console.print("[bright_black]  Hasta pronto.[/]")
+                console.print()
                 break
             case _:
                 aviso("Opción no válida. Por favor, intente de nuevo.")
-                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
 
 if __name__ == "__main__":
-    iniciar_sistema_menu()
+    try:
+        iniciar_sistema_menu()
+    except KeyboardInterrupt:
+        limpiar_pantalla()
+        console.print()
+        console.print("[yellow]  👋  ¡Muchas gracias por usar el sistema![/]")
+        console.print("[bright_black]  Hasta pronto.[/]")
+        console.print()
