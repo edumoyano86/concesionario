@@ -1,5 +1,47 @@
 {
     "autos": [],
     "clientes": [],
-    "ventas": []
+    "ventas": [],
+    "vendedores": [
+        {
+            "id": 1,
+            "dni": "28456789",
+            "nombre_completo": "Carlos Ríos",
+            "telefono": "345-4987654",
+            "email": "carlos@autosdellitoral.com",
+            "comision_porcentaje": 3.0,
+            "fecha_ingreso": "2020-06-01",
+            "estado": "activo"
+        },
+        {
+            "id": 2,
+            "dni": "30123456",
+            "nombre_completo": "Ana Martínez",
+            "telefono": "345-4111222",
+            "email": "ana@autosdellitoral.com",
+            "comision_porcentaje": 3.0,
+            "fecha_ingreso": "2022-03-15",
+            "estado": "activo"
+        },
+        {
+            "id": 3,
+            "dni": "33444555",
+            "nombre_completo": "Juan Pérez",
+            "telefono": "345-4333444",
+            "email": "juan@autosdellitoral.com",
+            "comision_porcentaje": 2.5,
+            "fecha_ingreso": "2024-01-10",
+            "estado": "activo"
+        },
+        {
+            "id": 4,
+            "dni": "35666777",
+            "nombre_completo": "Sofía Rodríguez",
+            "telefono": "345-4555666",
+            "email": "sofia@autosdellitoral.com",
+            "comision_porcentaje": 2.5,
+            "fecha_ingreso": "2025-05-20",
+            "estado": "activo"
+        }
+    ]
 }
