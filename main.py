@@ -1,70 +1,54 @@
-# main.py
-import os
-import ventas
-from colores import *
+#pip install -r requirements.txt
 
-def limpiar_pantalla():
-    """Limpia la terminal de forma nativa en cualquier sistema operativo"""
-    os.system('clear' if os.name != 'nt' else 'cls')
+import ventas
+from rich.console import Console
+
+console = Console(color_system="standard")
 
 def iniciar_sistema_menu():
     while True:
-        limpiar_pantalla()
+        ancho = 55        
+       
+        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
+        console.print(f"[bold red]{'🚗  AUTOS DEL LITORAL  🚗':^{ancho}}[/bold red]")
+        console.print(f"[bold blue]{'SISTEMA DE GESTIÓN':^{ancho}}[/bold blue]")
+        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
+        console.print()
+        
+        console.print("  [cyan][1][/cyan] [bold white]Módulo Autos[/bold white]       [dim]──  🚗 Stock y vehículos[/dim]")
+        console.print("  [cyan][2][/cyan] [bold white]Módulo Clientes[/bold white]    [dim]──  👥 Base de clientes[/dim]")
+        console.print("  [cyan][3][/cyan] [bold white]Módulo Ventas[/bold white]      [dim]──  💰 Registrar operaciones[/dim]")
+        console.print()
+        
+        console.print("  [bold red][0][/bold red] [dim]Salir del Programa[/dim]")
+        console.print()
+        
+        console.print("[dim cyan]" + "─" * ancho + "[/dim cyan]")
 
-        ancho = 50
-        
-        # 1. Dibujamos el separador superior (usando multiplicación de strings)
-        print(f"{DIM}{CYAN}{'═' * ancho}{RESET}")
-        
-        # 2. Títulos en Rojo y Azul con sus respectivos RESETs directos
-        print(f"{BOLD}{ROJO_B}{'🚗  AUTOS DEL LITORAL  🚗':^{ancho}}{RESET}")
-        print(f"{BOLD}{AZUL_B}{'SISTEMA DE GESTIÓN':^{ancho}}{RESET}")
-        
-        # 3. Separador medio
-        print(f"{DIM}{CYAN}{'═' * ancho}{RESET}")
-        print()
-        
-        # 4. Opciones del menú con estilos y colores directos en las cadenas
-        print(f"  {CYAN}[1]{RESET} {BLANCO_B}Módulo Autos       {RESET}{DIM}──  🚗 Stock y vehículos{RESET}")
-        print(f"  {CYAN}[2]{RESET} {BLANCO_B}Módulo Clientes    {RESET}{DIM}──  👥 Base de clientes{RESET}")
-        print(f"  {CYAN}[3]{RESET} {BLANCO_B}Módulo Ventas      {RESET}{DIM}──  💰 Registrar operaciones{RESET}")
-        print()
-        
-        # 5. Opción salir
-        print(f"  {ROJO_B}[0] {DIM}Salir del Programa{RESET}")
-        print()
-        
-        # 6. Separador inferior
-        print(f"{DIM}{CYAN}{'─' * ancho}{RESET}")
-
-        opc = input(f"\n{CYAN_B}  ▶  Seleccione una opción: {RESET}").strip()
+        opc = input("\n  ▶  Seleccione una opción: ").strip()
 
         match opc:
             case "1":
-                limpiar_pantalla()
-                print(f"{AZUL_B}🔹 Módulo de Autos — En desarrollo{RESET}")
-                print()
-                input(f"{DIM}  Presione Enter para volver...{RESET}")
+                console.print("[bold blue]🔹 Módulo de Autos — En desarrollo[/bold blue]")
+                console.print()
+                input("  Presione Enter para volver...")
             case "2":
-                limpiar_pantalla()
-                print(f"{AZUL_B}🔹 Módulo de Clientes — En desarrollo{RESET}")
-                print()
-                input(f"{DIM}  Presione Enter para volver...{RESET}")
+                console.print("[bold blue]🔹 Módulo de Clientes — En desarrollo[/bold blue]")
+                console.print()
+                input("  Presione Enter para volver...")
             case "3":
-                limpiar_pantalla()
-                print(f"{VERDE_B}✅ Redireccionando al área de ventas...{RESET}")
+                console.print("[bold green]✅ Redireccionando al área de ventas...[/bold green]")
                 ventas.mostrar_menu_ventas()
             case "0":
-                limpiar_pantalla()
-                print()
-                print(f"{AMARILLO_B}  👋  ¡Muchas gracias por usar el sistema!{RESET}")
-                print(f"{DIM}  Hasta pronto.{RESET}")
-                print()
+                console.print()
+                console.print("  [bold yellow]👋  ¡Muchas gracias por usar el sistema![/bold yellow]")
+                console.print("  [dim]Hasta pronto.[/dim]")
+                console.print()
                 break
             case _:
-                print()
-                print(f"{AMARILLO_B}⚠  Opción no válida. Por favor, intente de nuevo.{RESET}")
-                input(f"{DIM}  Presione Enter para continuar...{RESET}")
+                console.print()
+                console.print("  [bold yellow]⚠  Opción no válida. Por favor, intente de nuevo.[/bold yellow]")
+                input("  Presione Enter para continuar...")
 
 if __name__ == "__main__":
     iniciar_sistema_menu()
