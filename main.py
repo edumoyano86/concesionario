@@ -1,54 +1,138 @@
-#pip install -r requirements.txt
+import os
+from autos import menu_autos
 
-import ventas
-from rich.console import Console
+# from clientes import menu_clientes     
+# from vendedores import menu_vendedores 
+# from ventas import menu_ventas         
+# from reservas import menu_reservas     
 
-console = Console(color_system="standard")
+VERDE    = "\033[92m"
+ROJO     = "\033[91m"
+AMARILLO = "\033[93m"
+AZUL     = "\033[94m"
+CIAN     = "\033[96m"
+BLANCO   = "\033[97m"
+GRIS     = "\033[90m"
+RESET    = "\033[0m"
+NEGRITA  = "\033[1m"
 
-def iniciar_sistema_menu():
+def limpiar_pantalla():
+    os.system('clear' if os.name != 'nt' else 'cls')
+
+def aviso(msg): print(f"{AMARILLO}⚠️  {msg}{RESET}")
+
+#  SUBMENÚ: BASE DE CLIENTES
+
+def menu_base_clientes():
     while True:
-        ancho = 55        
-       
-        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
-        console.print(f"[bold red]{'🚗  AUTOS DEL LITORAL  🚗':^{ancho}}[/bold red]")
-        console.print(f"[bold blue]{'SISTEMA DE GESTIÓN':^{ancho}}[/bold blue]")
-        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
-        console.print()
-        
-        console.print("  [cyan][1][/cyan] [bold white]Módulo Autos[/bold white]       [dim]──  🚗 Stock y vehículos[/dim]")
-        console.print("  [cyan][2][/cyan] [bold white]Módulo Clientes[/bold white]    [dim]──  👥 Base de clientes[/dim]")
-        console.print("  [cyan][3][/cyan] [bold white]Módulo Ventas[/bold white]      [dim]──  💰 Registrar operaciones[/dim]")
-        console.print()
-        
-        console.print("  [bold red][0][/bold red] [dim]Salir del Programa[/dim]")
-        console.print()
-        
-        console.print("[dim cyan]" + "─" * ancho + "[/dim cyan]")
-
-        opc = input("\n  ▶  Seleccione una opción: ").strip()
+        limpiar_pantalla()
+        ancho = 50
+        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
+        print(f"{AZUL}{NEGRITA}{'👥  BASE DE CLIENTES':^{ancho}}{RESET}")
+        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
+        print()
+        print(f"  {CIAN}[1]{RESET} Clientes           {GRIS}──  👤 Gestión de clientes{RESET}")
+        print(f"  {CIAN}[2]{RESET} Vendedores         {GRIS}──  👔 Gestión de vendedores{RESET}")
+        print()
+        print(f"  {GRIS}[9] Volver al menú principal{RESET}")
+        print()
+        print(f"{GRIS}{'─' * ancho}{RESET}")
+        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
 
         match opc:
             case "1":
-                console.print("[bold blue]🔹 Módulo de Autos — En desarrollo[/bold blue]")
-                console.print()
-                input("  Presione Enter para volver...")
+                limpiar_pantalla()
+                print(f"{AMARILLO}⚠️  Módulo de Clientes — En desarrollo{RESET}")
+                print()
+                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                # menu_clientes()
             case "2":
-                console.print("[bold blue]🔹 Módulo de Clientes — En desarrollo[/bold blue]")
-                console.print()
-                input("  Presione Enter para volver...")
-            case "3":
-                console.print("[bold green]✅ Redireccionando al área de ventas...[/bold green]")
-                ventas.mostrar_menu_ventas()
-            case "0":
-                console.print()
-                console.print("  [bold yellow]👋  ¡Muchas gracias por usar el sistema![/bold yellow]")
-                console.print("  [dim]Hasta pronto.[/dim]")
-                console.print()
+                limpiar_pantalla()
+                print(f"{AMARILLO}⚠️  Módulo de Vendedores — En desarrollo{RESET}")
+                print()
+                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                # menu_vendedores()
+            case "9":
                 break
             case _:
-                console.print()
-                console.print("  [bold yellow]⚠  Opción no válida. Por favor, intente de nuevo.[/bold yellow]")
-                input("  Presione Enter para continuar...")
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
+
+#  SUBMENÚ: REGISTRAR OPERACIONES
+
+def menu_operaciones():
+    while True:
+        limpiar_pantalla()
+        ancho = 50
+        print(f"{VERDE}{NEGRITA}{'═' * ancho}{RESET}")
+        print(f"{VERDE}{NEGRITA}{'💰  REGISTRAR OPERACIONES':^{ancho}}{RESET}")
+        print(f"{VERDE}{NEGRITA}{'═' * ancho}{RESET}")
+        print()
+        print(f"  {CIAN}[1]{RESET} Ventas             {GRIS}──  💵 Registrar ventas{RESET}")
+        print(f"  {CIAN}[2]{RESET} Reservas           {GRIS}──  📌 Registrar reservas{RESET}")
+        print()
+        print(f"  {GRIS}[9] Volver al menú principal{RESET}")
+        print()
+        print(f"{GRIS}{'─' * ancho}{RESET}")
+        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
+
+        match opc:
+            case "1":
+                limpiar_pantalla()
+                print(f"{AMARILLO}⚠️  Módulo de Ventas — En desarrollo{RESET}")
+                print()
+                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                # menu_ventas()
+            case "2":
+                limpiar_pantalla()
+                print(f"{AMARILLO}⚠️  Módulo de Reservas — En desarrollo{RESET}")
+                print()
+                input(f"{GRIS}  Presione Enter para volver...{RESET}")
+                # menu_reservas()
+            case "9":
+                break
+            case _:
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
+
+#  MENÚ PRINCIPAL
+
+def iniciar_sistema_menu():
+    while True:
+        limpiar_pantalla()
+        ancho = 50
+
+        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
+        print(f"{ROJO}{NEGRITA}{'🚗  AUTOS DEL LITORAL — Sistema v1.0':^{ancho}}{RESET}")
+        print(f"{AZUL}{NEGRITA}{'═' * ancho}{RESET}")
+        print()
+        print(f"  {CIAN}[1]{RESET} Stock de vehículos {GRIS}──  🚗 Autos en stock{RESET}")
+        print(f"  {CIAN}[2]{RESET} Base de clientes   {GRIS}──  👥 Clientes y vendedores{RESET}")
+        print(f"  {CIAN}[3]{RESET} Registrar operac.  {GRIS}──  💰 Ventas y reservas{RESET}")
+        print()
+        print(f"  {ROJO}[9] {GRIS}Salir del Programa{RESET}")
+        print()
+        print(f"{GRIS}{'─' * ancho}{RESET}")
+
+        opc = input(f"\n{BLANCO}  ▶  Seleccione una opción: {RESET}").strip()
+
+        match opc:
+            case "1":
+                menu_autos()
+            case "2":
+                menu_base_clientes()
+            case "3":
+                menu_operaciones()
+            case "9":
+                limpiar_pantalla()
+                print()
+                print(f"{AMARILLO}  👋  ¡Muchas gracias por usar el sistema!{RESET}")
+                print(f"{GRIS}  Hasta pronto.{RESET}")
+                print()
+                break
+            case _:
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                input(f"{GRIS}  Presione Enter para continuar...{RESET}")
 
 if __name__ == "__main__":
     iniciar_sistema_menu()
