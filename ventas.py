@@ -82,6 +82,36 @@ def registrar_venta(datos):
 
     console.print("\n─── REGISTRAR NUEVA VENTA ───", style="bold blue")
 
+    if not lista_autos:
+        console.print("[bold yellow]⚠ No hay autos cargados en el sistema.[/bold yellow]")
+        return
+    
+    tabla_autos = Table(title="🚗 AUTOS DISPONIBLES EN STOCK", title_style="bold green")
+    tabla_autos.add_column("ID", justify="center", style="cyan")
+    tabla_autos.add_column("Patente", justify="center")
+    tabla_autos.add_column("Marca/Modelo")
+    tabla_autos.add_column("Precio", justify="right", style="green")
+    tabla_autos.add_column("Estado", justify="center")
+
+    hay_autos_disponibles = False
+    for auto in lista_autos:
+        # Solo mostramos los que se pueden vender realmente
+        if auto.get("estado") == "disponible":
+            hay_autos_disponibles = True
+            tabla_autos.add_row(
+                str(auto["id"]),
+                auto["patente"],
+                f"{auto['marca']} {auto['modelo']}",
+                f"${auto['precio']}",
+                auto["estado"]
+            )
+    
+    if not hay_autos_disponibles:
+        console.print("[bold yellow]⚠ No hay autos con estado 'disponible' para vender.[/bold yellow]")
+        return
+        
+    console.print(tabla_autos)
+
     id_auto_str = input("▶ ID del auto a vender: ").strip()
     if not id_auto_str.isdigit():
         console.print("[bold red]❌ El ID debe ser un número entero.[/bold red]")
@@ -102,6 +132,22 @@ def registrar_venta(datos):
         console.print("[bold red]❌ Este auto ya fue vendido previamente.[/bold red]")
         return
 
+    if not lista_clientes:
+        console.print("[bold yellow]⚠ No hay clientes registrados en el sistema todavía.[/bold yellow]")
+        return
+
+    tabla_clientes = Table(title="👤 CLIENTES REGISTRADOS", title_style="bold magenta")
+    tabla_clientes.add_column("ID", justify="center", style="cyan")
+    tabla_clientes.add_column("DNI", justify="center")
+    tabla_clientes.add_column("Nombre Completo")
+    tabla_clientes.add_column("Localidad")
+
+    for c in lista_clientes:
+        tabla_clientes.add_row(str(c["id"]), c["dni"], c["nombre_completo"], c["localidad"])
+        
+    console.print("\n")
+    console.print(tabla_clientes)
+
     id_cliente_str = input("▶ ID del cliente comprador: ").strip()
     if not id_cliente_str.isdigit():
         console.print("[bold red]❌ El ID debe ser un número entero.[/bold red]")
@@ -118,6 +164,22 @@ def registrar_venta(datos):
         console.print("[bold red]❌ El ID de cliente no está registrado.[/bold red]")
         return
 
+    if not lista_vendedores:
+        console.print("[bold yellow]⚠ No hay vendedores registrados en el sistema.[/bold yellow]")
+        return
+
+    tabla_vendedores = Table(title="🧑‍💼 VENDEDORES ACTIVOS", title_style="bold cyan")
+    tabla_vendedores.add_column("ID", justify="center", style="cyan")
+    tabla_vendedores.add_column("Nombre Vendedor")
+    tabla_vendedores.add_column("Comisión", justify="center")
+
+    for v in lista_vendedores:
+        if v.get("estado") == "activo":
+            tabla_vendedores.add_row(str(v["id"]), v["nombre_completo"], f"{v['comision_porcentaje']}%")
+            
+    console.print("\n")
+    console.print(tabla_vendedores)
+    
     id_vendedor_str = input("▶ ID del vendedor: ").strip()
     if not id_vendedor_str.isdigit():
         console.print("[bold red]❌ El ID debe ser un número entero.[/bold red]")
