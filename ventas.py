@@ -15,25 +15,25 @@ ARCHIVO_JSON = "concesionario.json"
 
 def cargar_datos():
     with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
-        datos = json.load(archivo)
+        datos_json = json.load(archivo)
     
-    for v in datos.get("ventas", []):
+    for v in datos_json.get("ventas", []):
         if isinstance(v.get("fecha_venta"), str):
             v["fecha_venta"] = date.fromisoformat(v["fecha_venta"])
             
-    return datos
+    return datos_json
 
 
-def guardar_datos(datos):
+def guardar_datos(datos_json):
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
-        json.dump(datos, archivo, indent=4, ensure_ascii=False, default=str)
+        json.dump(datos_json, archivo, indent=4, ensure_ascii=False, default=str)
 
 
 # Menu principal de ventas
 
 def mostrar_menu_ventas():
     while True:
-        datos = cargar_datos()
+        datos_actualizados = cargar_datos()
 
         console.print("\n")
         menu_texto = (
@@ -53,18 +53,18 @@ def mostrar_menu_ventas():
 
         match opcion_sel:
             case "1":
-                registrar_venta(datos)
-                guardar_datos(datos)
+                registrar_venta(datos_actualizados)
+                guardar_datos(datos_actualizados)
             case "2":
-                listar_ventas(datos)
+                listar_ventas(datos_actualizados)
             case "3":
-                buscar_venta(datos)
+                buscar_venta(datos_actualizados)
             case "4":
-                modificar_estado_pago(datos)
-                guardar_datos(datos)
+                modificar_estado_pago(datos_actualizados)
+                guardar_datos(datos_actualizados)
             case "5":
-                eliminar_venta(datos)
-                guardar_datos(datos)
+                eliminar_venta(datos_actualizados)
+                guardar_datos(datos_actualizados)
             case "9":
                 console.print("\n[bold green]✅ Volviendo al menú principal...[/bold green]")
                 break
@@ -74,11 +74,11 @@ def mostrar_menu_ventas():
 
 # Para registrar una venta
 
-def registrar_venta(datos):
-    lista_ventas = datos.get("ventas", [])
-    lista_autos = datos.get("autos", [])
-    lista_clientes = datos.get("clientes", [])
-    lista_vendedores = datos.get("vendedores", [])
+def registrar_venta(datos_actualizados):
+    lista_ventas = datos_actualizados.get("ventas", [])
+    lista_autos = datos_actualizados.get("autos", [])
+    lista_clientes = datos_actualizados.get("clientes", [])
+    lista_vendedores = datos_actualizados.get("vendedores", [])
 
     console.print("\n─── REGISTRAR NUEVA VENTA ───", style="bold blue")
 
@@ -92,12 +92,11 @@ def registrar_venta(datos):
     tabla_autos.add_column("Marca/Modelo")
     tabla_autos.add_column("Precio", justify="right", style="green")
     tabla_autos.add_column("Estado", justify="center")
-
-    hay_autos_disponibles = False
+    
+    autos_disponibles = 0
     for auto in lista_autos:
-        # Solo mostramos los que se pueden vender realmente
         if auto.get("estado") == "disponible":
-            hay_autos_disponibles = True
+            autos_disponibles = autos_disponibles + 1
             tabla_autos.add_row(
                 str(auto["id"]),
                 auto["patente"],
@@ -106,7 +105,7 @@ def registrar_venta(datos):
                 auto["estado"]
             )
     
-    if not hay_autos_disponibles:
+    if autos_disponibles == 0:
         console.print("[bold yellow]⚠ No hay autos con estado 'disponible' para vender.[/bold yellow]")
         return
         
@@ -124,7 +123,7 @@ def registrar_venta(datos):
             auto_encontrado = auto
             break
 
-    if not auto_encontrado:
+    if auto_encontrado == None:
         console.print("[bold red]❌ El ID de auto no existe en el sistema.[/bold red]")
         return
 
@@ -139,11 +138,11 @@ def registrar_venta(datos):
     tabla_clientes = Table(title="👤 CLIENTES REGISTRADOS", title_style="bold magenta")
     tabla_clientes.add_column("ID", justify="center", style="cyan")
     tabla_clientes.add_column("DNI", justify="center")
-    tabla_clientes.add_column("Nombre Completo")
+    tabla_clientes.add_column("Nombre Completo")    
     tabla_clientes.add_column("Localidad")
 
-    for c in lista_clientes:
-        tabla_clientes.add_row(str(c["id"]), c["dni"], c["nombre_completo"], c["localidad"])
+    for cliente in lista_clientes:
+        tabla_clientes.add_row(str(cliente["id"]), cliente["dni"], cliente["nombre_completo"], cliente["localidad"])
         
     console.print("\n")
     console.print(tabla_clientes)
@@ -154,13 +153,13 @@ def registrar_venta(datos):
         return
     id_cliente = int(id_cliente_str)
 
-    cliente_existe = False
-    for c in lista_clientes:
-        if c["id"] == id_cliente:
-            cliente_existe = True
+    clientes_encontrados = 0
+    for cliente in lista_clientes:
+        if cliente["id"] == id_cliente:
+            clientes_encontrados = clientes_encontrados + 1
             break
             
-    if not cliente_existe:
+    if clientes_encontrados == 0:
         console.print("[bold red]❌ El ID de cliente no está registrado.[/bold red]")
         return
 
@@ -173,26 +172,26 @@ def registrar_venta(datos):
     tabla_vendedores.add_column("Nombre Vendedor")
     tabla_vendedores.add_column("Comisión", justify="center")
 
-    for v in lista_vendedores:
-        if v.get("estado") == "activo":
-            tabla_vendedores.add_row(str(v["id"]), v["nombre_completo"], f"{v['comision_porcentaje']}%")
+    for vendedor in lista_vendedores:
+        if vendedor.get("estado") == "activo":
+            tabla_vendedores.add_row(str(vendedor["id"]), vendedor["nombre_completo"], f"{vendedor['comision_porcentaje']}%")
             
     console.print("\n")
     console.print(tabla_vendedores)
-    
+
     id_vendedor_str = input("▶ ID del vendedor: ").strip()
     if not id_vendedor_str.isdigit():
         console.print("[bold red]❌ El ID debe ser un número entero.[/bold red]")
         return
     id_vendedor = int(id_vendedor_str)
 
-    vendedor_existe = False
-    for v in lista_vendedores:
-        if v["id"] == id_vendedor:
-            vendedor_existe = True
+    vendedores_encontrados = 0
+    for vendedor in lista_vendedores:
+        if vendedor["id"] == id_vendedor:
+            vendedores_encontrados = vendedores_encontrados + 1
             break
 
-    if not vendedor_existe:
+    if vendedores_encontrados == 0:
         console.print("[bold red]❌ El ID de vendedor no existe en el sistema.[/bold red]")
         return
 
@@ -212,7 +211,6 @@ def registrar_venta(datos):
         if v["id"] >= nuevo_id:
             nuevo_id = v["id"] + 1
 
-
     nueva_venta = {
         "id": nuevo_id,
         "id_auto": id_auto,
@@ -226,7 +224,6 @@ def registrar_venta(datos):
 
     lista_ventas.append(nueva_venta)
     console.print(f"\n[bold green]✅ ¡Venta #{nuevo_id} registrada con éxito! El auto pasó automáticamente a 'vendido'.[/bold green]")
-
 
 # Muestra todas las ventas hechas
 
@@ -387,6 +384,6 @@ def eliminar_venta(datos):
     console.print("[bold red]❌ No se encontró ninguna venta con ese ID.[/bold red]")
 
 
-# Ejecución standalone para pruebas
+
 if __name__ == "__main__":
     mostrar_menu_ventas()
