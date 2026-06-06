@@ -21,16 +21,16 @@ def _formatear_precio(valor):
 def _formatear_kilometros(valor):
     return f"{valor:,}".replace(",", ".")
 
-#  JSON
+#   JSON
 
 def cargar_desde_json():
     global autos, contador_id_autos
     try:
         with open(ARCHIVO_JSON, "r", encoding="utf-8") as f:
             datos = json.load(f)
-        for a in datos:
+        for a in datos["autos"]:
             a["fecha_ingreso"] = date.fromisoformat(a["fecha_ingreso"])
-        autos = datos
+        autos = datos["autos"]
         if autos:
             contador_id_autos = max(a["id"] for a in autos) + 1
     except FileNotFoundError:
@@ -41,15 +41,20 @@ def cargar_desde_json():
 
 
 def guardar_en_json():
-    datos = []
+    datos = {
+        "autos": [],
+        "clientes": [],
+        "ventas": [],
+        "vendedores": []
+    }
     for a in autos:
         copia = a.copy()
         copia["fecha_ingreso"] = a["fecha_ingreso"].isoformat()
-        datos.append(copia)
+        datos["autos"].append(copia)
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
 
-#  MENÚ
+#   MENÚ
 
 def menu_autos():
     cargar_desde_json()
@@ -81,7 +86,7 @@ def menu_autos():
         else:
             aviso("Opción inválida, intentá de nuevo.")
 
-#  CARGAR
+#   CARGAR
 
 def cargar_auto():
     global contador_id_autos
@@ -124,7 +129,7 @@ def cargar_auto():
     guardar_en_json()
     ok(f"Auto #{auto['id']} cargado correctamente.")
 
-#  LISTAR (con filtros)
+#   LISTAR (con filtros)
 
 def listar_autos():
     if not autos:
@@ -181,7 +186,7 @@ def _aplicar_filtros(marca, estado, precio_min, precio_max):
         resultado.append(a)
     return resultado
 
-#  BUSCAR
+#   BUSCAR
 
 def buscar_auto():
     console.print(f"\n[bold]── Buscar auto ──[/]")
@@ -214,7 +219,7 @@ def _mostrar_auto_detalle(auto):
             valor = valor.upper()
         console.print(f"  [cyan]{clave}:[/] {valor}")
 
-#  CAMBIAR ESTADO
+#   CAMBIAR ESTADO
 
 def cambiar_estado_auto():
     console.print(f"\n[bold]── Cambiar estado ──[/]")
@@ -238,7 +243,7 @@ def cambiar_estado_auto():
     guardar_en_json()
     ok(f"Estado actualizado a '{nuevo_estado}'.")
 
-#  DAR DE BAJA
+#   DAR DE BAJA
 
 def dar_de_baja_auto():
     console.print(f"\n[bold]── Dar de baja un auto ──[/]")
