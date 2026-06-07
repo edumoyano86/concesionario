@@ -1,0 +1,52 @@
+{
+    "1": {
+        "id_interno": 1,
+        "dni": "44.644.133",
+        "nombre": "Milton Conforti",
+        "telefono": "3447468035",
+        "email": "Miltonconfortii@gmail.com",
+        "localidad": "San Jose",
+        "busqueda": "Volkswagen polo",
+        "auto_comprados": [
+            "Polo Gts 2023",
+            "Polo Gts 2023"
+        ],
+        "reservas_activas": [
+            "VW Golf gti 2016",
+            "VW Golf gti 2016"
+        ]
+    },
+    "2": {
+        "id_interno": 2,
+        "dni": "23.018.591",
+        "nombre": "Marisel Lopez",
+        "telefono": "3447-456754",
+        "email": "marisegl@gmail.com",
+        "localidad": "Colon",
+        "busqueda": "camioneta ranger",
+        "auto_comprados": [],
+        "reservas_activas": []
+    },
+    "3": {
+        "id_interno": 3,
+        "dni": "44.644.133",
+        "nombre": "Milton Conforti",
+        "telefono": "3447468035",
+        "email": "Miltonconfortii@gmail.com",
+        "localidad": "San Jose",
+        "busqueda": "Volkswagen polo",
+        "auto_comprados": [],
+        "reservas_activas": []
+    },
+    "4": {
+        "id_interno": 4,
+        "dni": "23.018.591",
+        "nombre": "Marisel Lopez",
+        "telefono": "1165439432",
+        "email": "marisegl@gmail.com",
+        "localidad": "Colon",
+        "busqueda": "Vehiculo 3 puertas",
+        "auto_comprados": [],
+        "reservas_activas": []
+    }
+}
