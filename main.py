@@ -4,7 +4,6 @@ import clientes
 import ventas
 from rich.console import Console
 
-
 console = Console(color_system="standard")
 
 def limpiar_pantalla():
