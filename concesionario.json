@@ -1,0 +1,128 @@
+{
+  "autos": [
+    {
+      "id": 1,
+      "patente": "ABC123",
+      "marca": "TOYOTA",
+      "modelo": "COROLLA",
+      "anio": 2020,
+      "kilometros": 45000,
+      "precio": 25000000,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 2,
+      "patente": "DEF456",
+      "marca": "FORD",
+      "modelo": "FOCUS",
+      "anio": 2019,
+      "kilometros": 62000,
+      "precio": 18000000,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 3,
+      "patente": "GHI789",
+      "marca": "VOLKSWAGEN",
+      "modelo": "GOLF",
+      "anio": 2021,
+      "kilometros": 30000,
+      "precio": 32000000,
+      "estado": "reservado",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 4,
+      "patente": "JKL012",
+      "marca": "CHEVROLET",
+      "modelo": "CRUZE",
+      "anio": 2018,
+      "kilometros": 85000,
+      "precio": 15000000,
+      "estado": "vendido",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 5,
+      "patente": "MNO345",
+      "marca": "HONDA",
+      "modelo": "CIVIC",
+      "anio": 2022,
+      "kilometros": 15000,
+      "precio": 38000000,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 6,
+      "patente": "PQR678",
+      "marca": "PEUGEOT",
+      "modelo": "308",
+      "anio": 2020,
+      "kilometros": 55000,
+      "precio": 27000000,
+      "estado": "en taller",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 7,
+      "patente": "STU901",
+      "marca": "RENAULT",
+      "modelo": "CLIO",
+      "anio": 2019,
+      "kilometros": 70000,
+      "precio": 16000000,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 8,
+      "patente": "VWX234",
+      "marca": "NISSAN",
+      "modelo": "SENTRA",
+      "anio": 2021,
+      "kilometros": 35000,
+      "precio": 29000000,
+      "estado": "reservado",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 9,
+      "patente": "YZA567",
+      "marca": "KIA",
+      "modelo": "SPORTAGE",
+      "anio": 2022,
+      "kilometros": 20000,
+      "precio": 42000000,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 10,
+      "patente": "BCD890",
+      "marca": "HYUNDAI",
+      "modelo": "TUCSON",
+      "anio": 2020,
+      "kilometros": 48000,
+      "precio": 35000000,
+      "estado": "vendido",
+      "fecha_ingreso": "2026-06-06"
+    },
+    {
+      "id": 11,
+      "patente": "IAP322",
+      "marca": "FORD",
+      "modelo": "focus",
+      "anio": 2011,
+      "kilometros": 200,
+      "precio": 100,
+      "estado": "disponible",
+      "fecha_ingreso": "2026-06-07"
+    }
+  ],
+  "clientes": [],
+  "ventas": [],
+  "vendedores": []
+}
