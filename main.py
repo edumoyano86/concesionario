@@ -4,12 +4,6 @@ import clientes
 import ventas
 from rich.console import Console
 
-"""
-from clientes import menu_clientes
-from vendedores import menu_vendedores
-from ventas import menu_ventas
-from reservas import menu_reservas
-"""
 console = Console(color_system="standard")
 
 def limpiar_pantalla():
