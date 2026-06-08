@@ -53,11 +53,7 @@ def guardar_en_json():
         datos["autos"].append(copia)
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
-
-#   MENÚ PRINCIPAL
-
-
-
+        
 #   MENÚ
 
 def menu_autos():
