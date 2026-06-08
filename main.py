@@ -1,54 +1,138 @@
-#pip install -r requirements.txt
-
-import ventas
+import os
+from autos import menu_autos
 from rich.console import Console
 
 console = Console(color_system="standard")
 
-def iniciar_sistema_menu():
-    while True:
-        ancho = 55        
-       
-        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
-        console.print(f"[bold red]{'🚗  AUTOS DEL LITORAL  🚗':^{ancho}}[/bold red]")
-        console.print(f"[bold blue]{'SISTEMA DE GESTIÓN':^{ancho}}[/bold blue]")
-        console.print("[dim cyan]" + "═" * ancho + "[/dim cyan]")
-        console.print()
-        
-        console.print("  [cyan][1][/cyan] [bold white]Módulo Autos[/bold white]       [dim]──  🚗 Stock y vehículos[/dim]")
-        console.print("  [cyan][2][/cyan] [bold white]Módulo Clientes[/bold white]    [dim]──  👥 Base de clientes[/dim]")
-        console.print("  [cyan][3][/cyan] [bold white]Módulo Ventas[/bold white]      [dim]──  💰 Registrar operaciones[/dim]")
-        console.print()
-        
-        console.print("  [bold red][0][/bold red] [dim]Salir del Programa[/dim]")
-        console.print()
-        
-        console.print("[dim cyan]" + "─" * ancho + "[/dim cyan]")
+# from clientes import menu_clientes
+# from vendedores import menu_vendedores
+# from ventas import menu_ventas
+# from reservas import menu_reservas
 
-        opc = input("\n  ▶  Seleccione una opción: ").strip()
+def limpiar_pantalla():
+    os.system('clear' if os.name != 'nt' else 'cls')
+
+def aviso(msg): console.print(f"[yellow]⚠️  {msg}[/]")
+
+#  SUBMENÚ: BASE DE CLIENTES
+
+def menu_base_clientes():
+    while True:
+        limpiar_pantalla()
+        ancho = 50
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print(f"[bold blue]{'👥  BASE DE CLIENTES':^{ancho}}[/]")
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Clientes           [bright_black]──  👤 Gestión de clientes[/]")
+        console.print(f"  [cyan][2][/] Vendedores         [bright_black]──  👔 Gestión de vendedores[/]")
+        console.print()
+        console.print(f"  [bright_black][9] Volver al menú principal[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
 
         match opc:
             case "1":
-                console.print("[bold blue]🔹 Módulo de Autos — En desarrollo[/bold blue]")
+                limpiar_pantalla()
+                console.print("[yellow]⚠️  Módulo de Clientes — En desarrollo[/]")
                 console.print()
-                input("  Presione Enter para volver...")
+                console.input("[bright_black]  Presione Enter para volver...[/]")
+                # menu_clientes()
             case "2":
-                console.print("[bold blue]🔹 Módulo de Clientes — En desarrollo[/bold blue]")
+                limpiar_pantalla()
+                console.print("[yellow]⚠️  Módulo de Vendedores — En desarrollo[/]")
                 console.print()
-                input("  Presione Enter para volver...")
+                console.input("[bright_black]  Presione Enter para volver...[/]")
+                # menu_vendedores()
+            case "9":
+                break
+            case _:
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
+
+#  SUBMENÚ: REGISTRAR OPERACIONES
+
+def menu_operaciones():
+    while True:
+        limpiar_pantalla()
+        ancho = 50
+        console.print(f"[bold green]{'═' * ancho}[/]")
+        console.print(f"[bold green]{'💰  REGISTRAR OPERACIONES':^{ancho}}[/]")
+        console.print(f"[bold green]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Ventas             [bright_black]──  💵 Registrar ventas[/]")
+        console.print(f"  [cyan][2][/] Reservas           [bright_black]──  📌 Registrar reservas[/]")
+        console.print()
+        console.print(f"  [bright_black][9] Volver al menú principal[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
+
+        match opc:
+            case "1":
+                limpiar_pantalla()
+                console.print("[yellow]⚠️  Módulo de Ventas — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
+                # menu_ventas()
+            case "2":
+                limpiar_pantalla()
+                console.print("[yellow]⚠️  Módulo de Reservas — En desarrollo[/]")
+                console.print()
+                console.input("[bright_black]  Presione Enter para volver...[/]")
+                # menu_reservas()
+            case "9":
+                break
+            case _:
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
+
+#  MENÚ PRINCIPAL
+
+def iniciar_sistema_menu():
+    while True:
+        limpiar_pantalla()
+        ancho = 50
+
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print(f"[bold red]{'🚗  AUTOS DEL LITORAL — Sistema v1.0':^{ancho}}[/]")
+        console.print(f"[bold blue]{'═' * ancho}[/]")
+        console.print()
+        console.print(f"  [cyan][1][/] Stock de vehículos [bright_black]──  🚗 Autos en stock[/]")
+        console.print(f"  [cyan][2][/] Base de clientes   [bright_black]──  👥 Clientes y vendedores[/]")
+        console.print(f"  [cyan][3][/] Registrar operac.  [bright_black]──  💰 Ventas y reservas[/]")
+        console.print()
+        console.print(f"  [red][9] [bright_black]Salir del Programa[/]")
+        console.print()
+        console.print(f"[bright_black]{'─' * ancho}[/]")
+
+        opc = console.input(f"\n[white]  ▶  Seleccione una opción: [/]").strip()
+
+        match opc:
+            case "1":
+                menu_autos()
+            case "2":
+                menu_base_clientes()
             case "3":
-                console.print("[bold green]✅ Redireccionando al área de ventas...[/bold green]")
-                ventas.mostrar_menu_ventas()
-            case "0":
+                menu_operaciones()
+            case "9":
+                limpiar_pantalla()
                 console.print()
-                console.print("  [bold yellow]👋  ¡Muchas gracias por usar el sistema![/bold yellow]")
-                console.print("  [dim]Hasta pronto.[/dim]")
+                console.print("[yellow]  👋  ¡Muchas gracias por usar el sistema![/]")
+                console.print("[bright_black]  Hasta pronto.[/]")
                 console.print()
                 break
             case _:
-                console.print()
-                console.print("  [bold yellow]⚠  Opción no válida. Por favor, intente de nuevo.[/bold yellow]")
-                input("  Presione Enter para continuar...")
+                aviso("Opción no válida. Por favor, intente de nuevo.")
+                console.input("[bright_black]  Presione Enter para continuar...[/]")
 
 if __name__ == "__main__":
-    iniciar_sistema_menu()
+    try:
+        iniciar_sistema_menu()
+    except KeyboardInterrupt:
+        limpiar_pantalla()
+        console.print()
+        console.print("[yellow]  👋  ¡Muchas gracias por usar el sistema![/]")
+        console.print("[bright_black]  Hasta pronto.[/]")
+        console.print()
