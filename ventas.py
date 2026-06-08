@@ -10,26 +10,36 @@ console = Console()
 
 ARCHIVO_JSON = "concesionario.json"
 
-
-# Funciones para el manejo del JSON 
+# Manejo de datos del .json 
 
 def cargar_datos():
+    if not os.path.exists(ARCHIVO_JSON):
+        return {"autos": [], "clientes": [], "vendedores": [], "ventas": []}
+
     with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
         datos_json = json.load(archivo)
     
-    for v in datos_json.get("ventas", []):
-        if isinstance(v.get("fecha_venta"), str):
-            v["fecha_venta"] = date.fromisoformat(v["fecha_venta"])
+    for venta in datos_json.get("ventas", []):
+        venta["fecha_venta"] = date.fromisoformat(venta["fecha_venta"])
             
     return datos_json
 
 
 def guardar_datos(datos_json):
+    ventas_guardar = []
+    for venta in datos_json.get("ventas", []):
+        venta_clonada = venta.copy()
+        venta_clonada["fecha_venta"] = str(venta["fecha_venta"])
+        ventas_guardar.append(venta_clonada)
+
+    datos_para_disco = datos_json.copy()
+    datos_para_disco["ventas"] = ventas_guardar
+
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
-        json.dump(datos_json, archivo, indent=4, ensure_ascii=False, default=str)
+        json.dump(datos_para_disco, archivo, indent=4, ensure_ascii=False)
 
 
-# Menu principal de ventas
+# Menu principal del modulo de ventas.
 
 def mostrar_menu_ventas():
     while True:
@@ -72,7 +82,7 @@ def mostrar_menu_ventas():
                 console.print("\n[bold red]⚠ Opción inválida. Intente de nuevo.[/bold red]")
 
 
-# Para registrar una venta
+# Funcion para registrar una venta nueva.
 
 def registrar_venta(datos_actualizados):
     lista_ventas = datos_actualizados.get("ventas", [])
@@ -216,7 +226,7 @@ def registrar_venta(datos_actualizados):
         "id_auto": id_auto,
         "id_cliente": id_cliente,
         "id_vendedor": id_vendedor,
-        "fecha_venta": date.today(),
+        "fecha_venta": date.today(), 
         "precio_final": precio_final,
         "forma_pago": forma_pago,
         "estado_pago": estado_pago
@@ -225,10 +235,10 @@ def registrar_venta(datos_actualizados):
     lista_ventas.append(nueva_venta)
     console.print(f"\n[bold green]✅ ¡Venta #{nuevo_id} registrada con éxito! El auto pasó automáticamente a 'vendido'.[/bold green]")
 
-# Muestra todas las ventas hechas
+# Funcion para mostrar las ventas. 
 
-def listar_ventas(datos):
-    lista_ventas = datos.get("ventas", [])
+def listar_ventas(datos_actualizados):
+    lista_ventas = datos_actualizados.get("ventas", [])
 
     if not lista_ventas:
         console.print("\n[bold yellow]⚠ No hay ventas registradas en el sistema todavía.[/bold yellow]")
@@ -244,26 +254,26 @@ def listar_ventas(datos):
     table.add_column("Forma Pago", justify="center")
     table.add_column("Estado Pago", justify="center", style="yellow")
 
-    for v in lista_ventas:
-        fecha_str = v["fecha_venta"].strftime("%Y-%m-%d") if isinstance(v["fecha_venta"], date) else str(v["fecha_venta"])
+    for venta in lista_ventas:
+        fecha_str = venta["fecha_venta"].strftime("%Y-%m-%d")
         
         table.add_row(
-            str(v["id"]),
-            str(v["id_auto"]),
-            str(v["id_cliente"]),
-            str(v["id_vendedor"]),
+            str(venta["id"]),
+            str(venta["id_auto"]),
+            str(venta["id_cliente"]),
+            str(venta["id_vendedor"]),
             fecha_str,
-            f"${v['precio_final']}",
-            v["forma_pago"],
-            v["estado_pago"]
+            f"${venta['precio_final']}",
+            venta["forma_pago"],
+            venta["estado_pago"]
         )
 
     console.print(table)
 
+# Funcion para buscar una venta.
 
-# Busqueda de ventas por patente, DNI o ID
-def buscar_venta(datos):
-    lista_ventas = datos.get("ventas", [])
+def buscar_venta(datos_actualizados):
+    lista_ventas = datos_actualizados.get("ventas", [])
 
     console.print("\n[bold cyan]Opciones de búsqueda:[/bold cyan]")
     print(" [1] Buscar por Patente del auto")
@@ -277,38 +287,38 @@ def buscar_venta(datos):
         case "1":
             patente_buscar = input("Ingrese la patente del auto: ").strip().upper()
             id_auto_encontrado = None
-            for auto in datos.get("autos", []):
+            for auto in datos_actualizados.get("autos", []):
                 if auto["patente"].upper() == patente_buscar:
                     id_auto_encontrado = auto["id"]
                     break
             
             if id_auto_encontrado is not None:
-                for v in lista_ventas:
-                    if v["id_auto"] == id_auto_encontrado:
-                        _imprimir_detalle_venta(v)
+                for venta in lista_ventas:
+                    if venta["id_auto"] == id_auto_encontrado:
+                        _imprimir_detalle_venta(venta)
                         encontrado = True
                         
         case "2":
             dni_buscar = input("Ingrese el DNI del cliente: ").strip()
             id_cliente_encontrado = None
-            for cliente in datos.get("clientes", []):
+            for cliente in datos_actualizados.get("clientes", []):
                 if cliente["dni"] == dni_buscar:
                     id_cliente_encontrado = cliente["id"]
                     break
                     
             if id_cliente_encontrado is not None:
-                for v in lista_ventas:
-                    if v["id_cliente"] == id_cliente_encontrado:
-                        _imprimir_detalle_venta(v)
+                for venta in lista_ventas:
+                    if venta["id_cliente"] == id_cliente_encontrado:
+                        _imprimir_detalle_venta(venta)
                         encontrado = True
                         
         case "3":
             id_vendedor_str = input("Ingrese el ID del Vendedor: ").strip()
             if id_vendedor_str.isdigit():
                 id_buscar = int(id_vendedor_str)
-                for v in lista_ventas:
-                    if v["id_vendedor"] == id_buscar:
-                        _imprimir_detalle_venta(v)
+                for venta in lista_ventas:
+                    if venta["id_vendedor"] == id_buscar:
+                        _imprimir_detalle_venta(venta)
                         encontrado = True
         case _:
             console.print("[bold red]❌ Opción de búsqueda inválida.[/bold red]")
@@ -317,47 +327,47 @@ def buscar_venta(datos):
     if not encontrado:
         console.print("[bold red]❌ No se encontró ninguna venta con ese criterio.[/bold red]")
 
+# Funcion para mostrar el detalle de una venta.
 
-def _imprimir_detalle_venta(v):
-    fecha_str = v["fecha_venta"].strftime("%Y-%m-%d") if isinstance(v["fecha_venta"], date) else str(v["fecha_venta"])
+def imprimir_detalle_venta(venta):
+    fecha_str = venta["fecha_venta"].strftime("%Y-%m-%d")
     detalle = (
-        f"🚗 [bold]Auto (ID):[/bold] {v['id_auto']}\n"
-        f"👤 [bold]Cliente (ID):[/bold] {v['id_cliente']}\n"
-        f"🧑‍💼 [bold]Vendedor (ID):[/bold] {v['id_vendedor']}\n"
+        f"🚗 [bold]Auto (ID):[/bold] {venta['id_auto']}\n"
+        f"👤 [bold]Cliente (ID):[/bold] {venta['id_cliente']}\n"
+        f"🧑‍💼 [bold]Vendedor (ID):[/bold] {venta['id_vendedor']}\n"
         f"📅 [bold]Fecha:[/bold] {fecha_str}\n"
-        f"💰 [bold]Monto final:[/bold] [green]${v['precio_final']}[/green]\n"
-        f"💳 [bold]Forma / Estado:[/bold] {v['forma_pago']} ({v['estado_pago']})"
+        f"💰 [bold]Monto final:[/bold] [green]${venta['precio_final']}[/green]\n"
+        f"💳 [bold]Forma / Estado:[/bold] {venta['forma_pago']} ({venta['estado_pago']})"
     )
-    console.print(Panel(detalle, title=f"🟢 Venta Encontrada #{v['id']}", border_style="green", width=45))
+    console.print(Panel(detalle, title=f"🟢 Venta Encontrada #{venta['id']}", border_style="green", width=45))
 
+# Funcion para modificar el estado de pago de una venta.
 
-# Para modificar el estado de pago si se vendio en cuotas
-
-def modificar_estado_pago(datos):
-    lista_ventas = datos.get("ventas", [])
+def modificar_estado_pago(datos_actualizados):
+    lista_ventas = datos_actualizados.get("ventas", [])
     
     id_str = input("▶ Ingrese el ID de la venta a modificar: ").strip()
     if not id_str.isdigit():
-        consoleprint("[bold red]❌ El ID debe ser un número.[/bold red]")
+        console.print("[bold red]❌ El ID debe ser un número.[/bold red]")
         return
     id_buscar = int(id_str)
 
-    for v in lista_ventas:
-        if v["id"] == id_buscar:
-            console.print(f"Venta encontrada. Estado de pago actual: [yellow]{v['estado_pago']}[/yellow]")
+    for venta in lista_ventas:
+        if venta["id"] == id_buscar:
+            console.print(f"Venta encontrada. Estado de pago actual: [yellow]{venta['estado_pago']}[/yellow]")
             nuevo_estado = input("▶ Ingrese nuevo estado (cobrado / pendiente / en cuotas): ").strip().lower()
             if nuevo_estado:
-                v["estado_pago"] = nuevo_estado
+                venta["estado_pago"] = nuevo_estado
                 console.print("[bold green]✅ Estado de pago actualizado con éxito.[/bold green]")
             return
 
     console.print("[bold red]❌ No se encontró ninguna venta con ese ID.[/bold red]")
 
-# Para eliminar una Venta
+# Funcion para eliminar una venta.
 
-def eliminar_venta(datos):
-    lista_ventas = datos.get("ventas", [])
-    lista_autos = datos.get("autos", [])
+def eliminar_venta(datos_actualizados):
+    lista_ventas = datos_actualizados.get("ventas", [])
+    lista_autos = datos_actualizados.get("autos", [])
 
     id_str = input("▶ Ingrese el ID de la venta que desea ANULAR: ").strip()
     if not id_str.isdigit():
@@ -365,16 +375,16 @@ def eliminar_venta(datos):
         return
     id_buscar = int(id_str)
 
-    for v in lista_ventas:
-        if v["id"] == id_buscar:
-            confirmar = input(f"⚠ ¿Está seguro de anular la venta #{v['id']}? (S/N): ").strip().upper()
+    for venta in lista_ventas:
+        if venta["id"] == id_buscar:
+            confirmar = input(f"⚠ ¿Está seguro de anular la venta #{venta['id']}? (S/N): ").strip().upper()
             if confirmar == "S":
                 for auto in lista_autos:
-                    if auto["id"] == v["id_auto"]:
+                    if auto["id"] == venta["id_auto"]:
                         auto["estado"] = "disponible"
                         break
                 
-                lista_ventas.remove(v)
+                lista_ventas.remove(venta)
                 console.print("[bold green]✅ Venta eliminada. El auto vuelve a estar 'disponible' en el stock.[/bold green]")
                 return
             else:
@@ -382,7 +392,6 @@ def eliminar_venta(datos):
                 return
 
     console.print("[bold red]❌ No se encontró ninguna venta con ese ID.[/bold red]")
-
 
 
 if __name__ == "__main__":
