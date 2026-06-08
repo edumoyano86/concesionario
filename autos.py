@@ -217,7 +217,7 @@ def _mostrar_auto_detalle(auto):
         "precio": "Precio", "estado": "Estado", "fecha_ingreso": "Ingreso",
     }
     colores = {
-        "id": "[bright_white]", "modelo": "[white]", "anio": "[white]",
+        "id": "[bright_white]", "anio": "[white]",
         "kilometros": "[white]", "precio": "[green]", "fecha_ingreso": "[white]",
     }
     console.print(f"\n[bold blue]── Detalle del auto ──[/]")
