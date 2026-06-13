@@ -135,7 +135,6 @@ class GestionClientes:
         try:
             with open(sistema.archivo_json, "r", encoding="utf-8") as archivo:
                 datos_cargados = json.load(archivo)
-                # ACA MODIFIQUE PARA QUE SOLO LEA LOS DATOS QUE PERTENECEN A CLIENTES Y NO TRAIGA 
                 datos_clientes = datos_cargados.get("clientes", {})
                 for id_str, datos in datos_clientes.items():
                     id_int = int(id_str)
@@ -153,7 +152,7 @@ class GestionClientes:
             pass 
 
 
-# ACA METI TODO EL MENU EN UNA FUNCION PARA QUE LO PUEDA LLAMAR DESDE MAIN
+
 def menu_clientes():
     mi_concesionaria = GestionClientes() 
 
@@ -259,6 +258,6 @@ def menu_clientes():
             break
         else:
             console.print("[bold red]Opción inválida. Intente de nuevo con un número del 1 al 7.[/bold red]")
-# ESTO TAMBIN LO PUSE POR LO MISMO DE METER TODO DENTRO DE LA FUNCION 
+
 if __name__ == "__main__":
     menu_clientes() 
