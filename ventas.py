@@ -14,7 +14,7 @@ ARCHIVO_JSON = "concesionario.json"
 
 def cargar_datos():
     if not os.path.exists(ARCHIVO_JSON):
-        return {"autos": [], "clientes": [], "vendedores": [], "ventas": []}
+        return {"autos": [], "clientes": {}, "vendedores": [], "ventas": []}
 
     with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
         datos_json = json.load(archivo)
@@ -41,7 +41,7 @@ def guardar_datos(datos_json):
 
 # Menu principal del modulo de ventas.
 
-def mostrar_menu_ventas():
+def menu_ventas():
     while True:
         datos_actualizados = cargar_datos()
 
@@ -87,7 +87,7 @@ def mostrar_menu_ventas():
 def registrar_venta(datos_actualizados):
     lista_ventas = datos_actualizados.get("ventas", [])
     lista_autos = datos_actualizados.get("autos", [])
-    lista_clientes = datos_actualizados.get("clientes", [])
+    dic_clientes = datos_actualizados.get("clientes", {})
     lista_vendedores = datos_actualizados.get("vendedores", [])
 
     console.print("\n─── REGISTRAR NUEVA VENTA ───", style="bold blue")
@@ -141,7 +141,7 @@ def registrar_venta(datos_actualizados):
         console.print("[bold red]❌ Este auto ya fue vendido previamente.[/bold red]")
         return
 
-    if not lista_clientes:
+    if not dic_clientes:
         console.print("[bold yellow]⚠ No hay clientes registrados en el sistema todavía.[/bold yellow]")
         return
 
@@ -151,8 +151,13 @@ def registrar_venta(datos_actualizados):
     tabla_clientes.add_column("Nombre Completo")    
     tabla_clientes.add_column("Localidad")
 
-    for cliente in lista_clientes:
-        tabla_clientes.add_row(str(cliente["id"]), cliente["dni"], cliente["nombre_completo"], cliente["localidad"])
+    for cliente in dic_clientes.values():
+        tabla_clientes.add_row(
+            str(cliente["id_interno"]),
+            cliente["dni"], 
+            cliente["nombre"], 
+            cliente["localidad"]
+        )
         
     console.print("\n")
     console.print(tabla_clientes)
@@ -164,9 +169,9 @@ def registrar_venta(datos_actualizados):
     id_cliente = int(id_cliente_str)
 
     clientes_encontrados = 0
-    for cliente in lista_clientes:
-        if cliente["id"] == id_cliente:
-            clientes_encontrados = clientes_encontrados + 1
+    for id_str in dic_clientes.keys():
+        if int(id_str) == id_cliente:
+            clientes_encontrados = 1
             break
             
     if clientes_encontrados == 0:
@@ -295,21 +300,21 @@ def buscar_venta(datos_actualizados):
             if id_auto_encontrado is not None:
                 for venta in lista_ventas:
                     if venta["id_auto"] == id_auto_encontrado:
-                        _imprimir_detalle_venta(venta)
+                        imprimir_detalle_venta(venta)
                         encontrado = True
                         
         case "2":
             dni_buscar = input("Ingrese el DNI del cliente: ").strip()
             id_cliente_encontrado = None
-            for cliente in datos_actualizados.get("clientes", []):
+            for cliente in datos_actualizados.get("clientes", {}).values():
                 if cliente["dni"] == dni_buscar:
-                    id_cliente_encontrado = cliente["id"]
+                    id_cliente_encontrado = cliente["id_interno"]
                     break
                     
             if id_cliente_encontrado is not None:
                 for venta in lista_ventas:
                     if venta["id_cliente"] == id_cliente_encontrado:
-                        _imprimir_detalle_venta(venta)
+                        imprimir_detalle_venta(venta)
                         encontrado = True
                         
         case "3":
@@ -318,7 +323,7 @@ def buscar_venta(datos_actualizados):
                 id_buscar = int(id_vendedor_str)
                 for venta in lista_ventas:
                     if venta["id_vendedor"] == id_buscar:
-                        _imprimir_detalle_venta(venta)
+                        imprimir_detalle_venta(venta)
                         encontrado = True
         case _:
             console.print("[bold red]❌ Opción de búsqueda inválida.[/bold red]")
@@ -395,4 +400,4 @@ def eliminar_venta(datos_actualizados):
 
 
 if __name__ == "__main__":
-    mostrar_menu_ventas()
+    menu_ventas()

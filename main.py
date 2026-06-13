@@ -1,15 +1,10 @@
 import os
 from autos import menu_autos
-import clientes
-import ventas
+from clientes import menu_clientes
+from ventas import menu_ventas
 from rich.console import Console
 
-"""
-from clientes import menu_clientes
-from vendedores import menu_vendedores
-from ventas import menu_ventas
-from reservas import menu_reservas
-"""
+
 console = Console(color_system="standard")
 
 def limpiar_pantalla():
@@ -42,10 +37,10 @@ def iniciar_sistema_menu():
             case "1":
                 menu_autos()
             case "2":
-                clientes.menu_clientes()
+                menu_clientes()
                 console.input("[bright_black]  Presione Enter para volver...[/]")
             case "3":
-                ventas.mostrar_menu_ventas()
+                menu_ventas()
                 console.input("[bright_black]  Presione Enter para volver...[/]")
             case "9":
                 limpiar_pantalla()
