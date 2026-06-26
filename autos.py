@@ -1,14 +1,10 @@
-import json
 from datetime import date
 from rich.console import Console
+import datos
 
 console = Console(color_system="standard")
 
-autos = []
-contador_id_autos = 1
-
 ESTADOS_VALIDOS = ("disponible", "reservado", "vendido", "en taller")
-ARCHIVO_JSON    = "concesionario.json"
 
 def ok(msg):    console.print(f"[green]✅ {msg}[/]")
 def error(msg): console.print(f"[red]❌ {msg}[/]")
@@ -21,43 +17,10 @@ def _formatear_precio(valor):
 def _formatear_kilometros(valor):
     return f"{valor:,}".replace(",", ".")
 
-#   JSON
-
-def cargar_desde_json():
-    global autos, contador_id_autos
-    try:
-        with open(ARCHIVO_JSON, "r", encoding="utf-8") as f:
-            datos = json.load(f)
-        for a in datos["autos"]:
-            a["fecha_ingreso"] = date.fromisoformat(a["fecha_ingreso"])
-        autos = datos["autos"]
-        if autos:
-            contador_id_autos = max(a["id"] for a in autos) + 1
-    except FileNotFoundError:
-        autos = []
-    except json.JSONDecodeError:
-        aviso("El archivo JSON estaba dañado. Se arranca con lista vacía.")
-        autos = []
-
-
-def guardar_en_json():
-    datos = {
-        "autos": [],
-        "clientes": [],
-        "ventas": [],
-        "vendedores": []
-    }
-    for a in autos:
-        copia = a.copy()
-        copia["fecha_ingreso"] = a["fecha_ingreso"].isoformat()
-        datos["autos"].append(copia)
-    with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
-        json.dump(datos, f, ensure_ascii=False, indent=2)
-
+        
 #   MENÚ
 
-def menu_autos():
-    cargar_desde_json()
+def menu_autos(datos_actualizados):
     while True:
         console.print(f"\n[bold blue]══════════════════════════════════════[/]")
         console.print(f"[bold blue]  🚗 AUTOS EN STOCK[/]")
@@ -72,15 +35,18 @@ def menu_autos():
         opcion = console.input(f"[white]¿Qué querés hacer? [/]").strip()
 
         if opcion == "1":
-            cargar_auto()
+            cargar_auto(datos_actualizados)
+            datos.guardar_todo(datos_actualizados)
         elif opcion == "2":
-            listar_autos()
+            listar_autos(datos_actualizados)
         elif opcion == "3":
-            buscar_auto()
+            buscar_auto(datos_actualizados)
         elif opcion == "4":
-            cambiar_estado_auto()
+            cambiar_estado_auto(datos_actualizados)
+            datos.guardar_todo(datos_actualizados)
         elif opcion == "5":
-            dar_de_baja_auto()
+            dar_de_baja_auto(datos_actualizados)
+            datos.guardar_todo(datos_actualizados)
         elif opcion == "9":
             break
         else:
@@ -88,17 +54,17 @@ def menu_autos():
 
 #   CARGAR
 
-def cargar_auto():
-    global contador_id_autos
+def cargar_auto(datos_actualizados):
+    lista_autos = datos_actualizados.get("autos", [])
     console.print(f"\n[bold]── Cargar auto nuevo ──[/]")
 
     patente = input("Patente: ").strip().upper()
-    if _patente_existe(patente):
+    if _patente_existe(patente, lista_autos):
         error("Ya existe un auto con esa patente.")
         return
 
     marca  = input("Marca: ").strip().upper()
-    modelo = input("Modelo: ").strip()
+    modelo = input("Modelo: ").strip().upper()
 
     anio = _pedir_entero("Año: ")
     if anio is None:
@@ -112,8 +78,14 @@ def cargar_auto():
     if precio is None:
         return
 
+    # Calcular el próximo ID
+    nuevo_id = 1
+    for a in lista_autos:
+        if a["id"] >= nuevo_id:
+            nuevo_id = a["id"] + 1
+
     auto = {
-        "id": contador_id_autos,
+        "id": nuevo_id,
         "patente": patente,
         "marca": marca,
         "modelo": modelo,
@@ -121,18 +93,17 @@ def cargar_auto():
         "kilometros": km,
         "precio": precio,
         "estado": "disponible",
-        "fecha_ingreso": date.today(),
+        "fecha_ingreso": date.today().isoformat(),
     }
 
-    autos.append(auto)
-    contador_id_autos += 1
-    guardar_en_json()
+    lista_autos.append(auto)
     ok(f"Auto #{auto['id']} cargado correctamente.")
 
 #   LISTAR (con filtros)
 
-def listar_autos():
-    if not autos:
+def listar_autos(datos_actualizados):
+    lista_autos = datos_actualizados.get("autos", [])
+    if not lista_autos:
         info("No hay autos cargados.")
         return
 
@@ -142,22 +113,25 @@ def listar_autos():
     precio_min    = _pedir_entero_opcional("Precio mínimo: ")
     precio_max    = _pedir_entero_opcional("Precio máximo: ")
 
-    resultado = _aplicar_filtros(marca_filtro, estado_filtro, precio_min, precio_max)
+    resultado = _aplicar_filtros(lista_autos, marca_filtro, estado_filtro, precio_min, precio_max)
 
     if not resultado:
         info("No se encontraron autos con esos filtros.")
         return
 
-    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} [white]{'Modelo':<16}[/] [white]{'Año':<6}[/] [white]{'Km':<8}[/] {'Precio':<12} {'Estado':<12} [white]{'Ingreso'}[/]"
+    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} {'Modelo':<16} {'Año':<6} {'Km':<8} {'Precio':<12} {'Estado':<12} {'Ingreso'}"
     console.print(f"\n[blue]{encabezado}[/]", soft_wrap=True)
-    console.print(f"[blue]{'─' * 95}[/]", soft_wrap=True)
+    console.print(f"[blue]{'─' * 100}[/]", soft_wrap=True)
     for a in resultado:
         color_estado = _color_estado(a["estado"])
+        fecha_mostrar = a["fecha_ingreso"]
+        if isinstance(fecha_mostrar, str):
+            fecha_mostrar = fecha_mostrar  # Ya está en formato string ISO
         console.print(
             f"[bright_white]{a['id']:<5}[/] [bright_white]{a['patente']:<10}[/] [bright_white]{a['marca']:<12}[/] [bright_white]{a['modelo']:<16}[/] "
             f"[bright_white]{a['anio']:<6}[/] [bright_white]{_formatear_kilometros(a['kilometros']):<8}[/] "
             f"[green]{_formatear_precio(a['precio']):<12}[/] "
-            f"{color_estado}{a['estado'].upper():<12}[/] [bright_white]{a['fecha_ingreso']}[/]",
+            f"{color_estado}{a['estado'].upper():<12}[/] [bright_white]{fecha_mostrar}[/]",
             soft_wrap=True,
         )
 
@@ -172,9 +146,9 @@ def _color_estado(estado):
     return colores.get(estado, "")
 
 
-def _aplicar_filtros(marca, estado, precio_min, precio_max):
+def _aplicar_filtros(lista_autos, marca, estado, precio_min, precio_max):
     resultado = []
-    for a in autos:
+    for a in lista_autos:
         if marca and marca not in a["marca"].lower():
             continue
         if estado and a["estado"] != estado:
@@ -188,7 +162,8 @@ def _aplicar_filtros(marca, estado, precio_min, precio_max):
 
 #   BUSCAR
 
-def buscar_auto():
+def buscar_auto(datos_actualizados):
+    lista_autos = datos_actualizados.get("autos", [])
     console.print(f"\n[bold]── Buscar auto ──[/]")
     console.print(f"  [cyan]1.[/] Por patente")
     console.print(f"  [cyan]2.[/] Por número interno")
@@ -196,10 +171,10 @@ def buscar_auto():
 
     if criterio == "1":
         patente = input("Patente: ").strip().upper()
-        auto = _buscar_por_patente(patente)
+        auto = _buscar_por_patente(patente, lista_autos)
     elif criterio == "2":
         id_auto = _pedir_entero("Número interno: ")
-        auto = _buscar_por_id(id_auto) if id_auto is not None else None
+        auto = _buscar_por_id(id_auto, lista_autos) if id_auto is not None else None
     else:
         aviso("Opción inválida.")
         return
@@ -211,20 +186,40 @@ def buscar_auto():
 
 
 def _mostrar_auto_detalle(auto):
+    etiquetas = {
+        "id": "ID", "patente": "Patente", "marca": "Marca",
+        "modelo": "Modelo", "anio": "Año", "kilometros": "Km",
+        "precio": "Precio", "estado": "Estado", "fecha_ingreso": "Ingreso",
+    }
+    colores = {
+        "id": "[bright_white]", "anio": "[white]",
+        "kilometros": "[white]", "precio": "[green]", "fecha_ingreso": "[white]",
+    }
     console.print(f"\n[bold blue]── Detalle del auto ──[/]")
     for clave, valor in auto.items():
+        etiqueta = etiquetas.get(clave, clave)
         if clave == "precio":
             valor = _formatear_precio(valor)
         elif clave in ("marca", "estado"):
             valor = valor.upper()
-        console.print(f"  [cyan]{clave}:[/] {valor}")
+        color = colores.get(clave, "")
+        if clave == "estado":
+            color = _color_estado(valor.lower() if isinstance(valor, str) else "disponible")
+        if color:
+            console.print(f"  [cyan]{etiqueta}:[/] {color}{valor}[/]")
+        else:
+            console.print(f"  [cyan]{etiqueta}:[/] {valor}")
 
 #   CAMBIAR ESTADO
 
-def cambiar_estado_auto():
+def cambiar_estado_auto(datos_actualizados):
+    lista_autos = datos_actualizados.get("autos", [])
     console.print(f"\n[bold]── Cambiar estado ──[/]")
-    id_auto = _pedir_entero("Número interno del auto: ")
-    auto = _buscar_por_id(id_auto) if id_auto is not None else None
+    console.print("[bright_black]Escribí 'volver' para cancelar[/]")
+    id_auto = _pedir_entero_con_cancelacion("Número interno del auto: ")
+    if id_auto is None:
+        return
+    auto = _buscar_por_id(id_auto, lista_autos) if id_auto is not None else None
 
     if not auto:
         info("Auto no encontrado.")
@@ -240,15 +235,15 @@ def cambiar_estado_auto():
         return
 
     auto["estado"] = nuevo_estado
-    guardar_en_json()
     ok(f"Estado actualizado a '{nuevo_estado}'.")
 
 #   DAR DE BAJA
 
-def dar_de_baja_auto():
+def dar_de_baja_auto(datos_actualizados):
+    lista_autos = datos_actualizados.get("autos", [])
     console.print(f"\n[bold]── Dar de baja un auto ──[/]")
     id_auto = _pedir_entero("Número interno del auto: ")
-    auto = _buscar_por_id(id_auto) if id_auto is not None else None
+    auto = _buscar_por_id(id_auto, lista_autos) if id_auto is not None else None
 
     if not auto:
         info("Auto no encontrado.")
@@ -258,30 +253,29 @@ def dar_de_baja_auto():
     confirmacion = console.input(f"\n[yellow]¿Confirmás la baja? (s/n): [/]").strip().lower()
 
     if confirmacion == "s":
-        autos.remove(auto)
-        guardar_en_json()
+        lista_autos.remove(auto)
         ok("Auto dado de baja correctamente.")
     else:
         console.print("[bright_black]↩️  Operación cancelada.[/]")
 
-#  HELPERS INTERNOS
+#   HELPERS INTERNOS
 
-def _buscar_por_id(id_auto):
-    for a in autos:
+def _buscar_por_id(id_auto, lista_autos):
+    for a in lista_autos:
         if a["id"] == id_auto:
             return a
     return None
 
 
-def _buscar_por_patente(patente):
-    for a in autos:
+def _buscar_por_patente(patente, lista_autos):
+    for a in lista_autos:
         if a["patente"] == patente:
             return a
     return None
 
 
-def _patente_existe(patente):
-    return _buscar_por_patente(patente) is not None
+def _patente_existe(patente, lista_autos):
+    return _buscar_por_patente(patente, lista_autos) is not None
 
 
 def _pedir_entero(mensaje):
@@ -301,3 +295,9 @@ def _pedir_entero_opcional(mensaje):
     except ValueError:
         aviso("Valor ignorado (no era un número).")
         return None
+
+#   SALIR CUANDO SE ENTRA EN UNA OPCIÓN
+
+def salir():
+    console.print("[bright_black]↩️  Volviendo al menú principal...[/]")
+    return True
