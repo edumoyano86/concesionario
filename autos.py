@@ -53,7 +53,7 @@ def guardar_en_json():
         datos["autos"].append(copia)
     with open(ARCHIVO_JSON, "w", encoding="utf-8") as f:
         json.dump(datos, f, ensure_ascii=False, indent=2)
-        
+
 #   MENÚ
 
 def menu_autos():
@@ -148,9 +148,9 @@ def listar_autos():
         info("No se encontraron autos con esos filtros.")
         return
 
-    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} {'Modelo':<16} {'Año':<6} {'Km':<8} {'Precio':<12} {'Estado':<12} {'Ingreso'}"
+    encabezado = f"{'ID':<5} {'Patente':<10} {'Marca':<12} [white]{'Modelo':<16}[/] [white]{'Año':<6}[/] [white]{'Km':<8}[/] {'Precio':<12} {'Estado':<12} [white]{'Ingreso'}[/]"
     console.print(f"\n[blue]{encabezado}[/]", soft_wrap=True)
-    console.print(f"[blue]{'─' * 100}[/]", soft_wrap=True)
+    console.print(f"[blue]{'─' * 95}[/]", soft_wrap=True)
     for a in resultado:
         color_estado = _color_estado(a["estado"])
         console.print(
@@ -211,29 +211,13 @@ def buscar_auto():
 
 
 def _mostrar_auto_detalle(auto):
-    etiquetas = {
-        "id": "ID", "patente": "Patente", "marca": "Marca",
-        "modelo": "Modelo", "anio": "Año", "kilometros": "Km",
-        "precio": "Precio", "estado": "Estado", "fecha_ingreso": "Ingreso",
-    }
-    colores = {
-        "id": "[bright_white]", "anio": "[white]",
-        "kilometros": "[white]", "precio": "[green]", "fecha_ingreso": "[white]",
-    }
     console.print(f"\n[bold blue]── Detalle del auto ──[/]")
     for clave, valor in auto.items():
-        etiqueta = etiquetas.get(clave, clave)
         if clave == "precio":
             valor = _formatear_precio(valor)
         elif clave in ("marca", "estado"):
             valor = valor.upper()
-        color = colores.get(clave, "")
-        if clave == "estado":
-            color = _color_estado(valor.lower() if isinstance(valor, str) else "disponible")
-        if color:
-            console.print(f"  [cyan]{etiqueta}:[/] {color}{valor}[/]")
-        else:
-            console.print(f"  [cyan]{etiqueta}:[/] {valor}")
+        console.print(f"  [cyan]{clave}:[/] {valor}")
 
 #   CAMBIAR ESTADO
 
