@@ -16,7 +16,6 @@ def _formatear_precio(valor):
 
 def _formatear_kilometros(valor):
     return f"{valor:,}".replace(",", ".")
-
         
 #   MENÚ
 
@@ -43,10 +42,8 @@ def menu_autos(datos_actualizados):
             buscar_auto(datos_actualizados)
         elif opcion == "4":
             cambiar_estado_auto(datos_actualizados)
-            datos.guardar_todo(datos_actualizados)
         elif opcion == "5":
             dar_de_baja_auto(datos_actualizados)
-            datos.guardar_todo(datos_actualizados)
         elif opcion == "9":
             break
         else:
@@ -216,7 +213,7 @@ def cambiar_estado_auto(datos_actualizados):
     lista_autos = datos_actualizados.get("autos", [])
     console.print(f"\n[bold]── Cambiar estado ──[/]")
     console.print("[bright_black]Escribí 'volver' para cancelar[/]")
-    id_auto = _pedir_entero_con_cancelacion("Número interno del auto: ")
+    id_auto = _pedir_entero("Número interno del auto: ")
     if id_auto is None:
         return
     auto = _buscar_por_id(id_auto, lista_autos) if id_auto is not None else None
