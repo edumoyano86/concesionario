@@ -1,5 +1,3 @@
-
-import json
 import os
 from datetime import date
 from rich.console import Console
@@ -8,43 +6,11 @@ from rich.panel import Panel
 
 console = Console()
 
-ARCHIVO_JSON = "concesionario.json"
-
-# Manejo de datos del .json 
-
-def cargar_datos():
-    if not os.path.exists(ARCHIVO_JSON):
-        return {"autos": [], "clientes": {}, "vendedores": [], "ventas": []}
-
-    with open(ARCHIVO_JSON, "r", encoding="utf-8") as archivo:
-        datos_json = json.load(archivo)
-    
-    for venta in datos_json.get("ventas", []):
-        venta["fecha_venta"] = date.fromisoformat(venta["fecha_venta"])
-            
-    return datos_json
-
-
-def guardar_datos(datos_json):
-    ventas_guardar = []
-    for venta in datos_json.get("ventas", []):
-        venta_clonada = venta.copy()
-        venta_clonada["fecha_venta"] = str(venta["fecha_venta"])
-        ventas_guardar.append(venta_clonada)
-
-    datos_para_disco = datos_json.copy()
-    datos_para_disco["ventas"] = ventas_guardar
-
-    with open(ARCHIVO_JSON, "w", encoding="utf-8") as archivo:
-        json.dump(datos_para_disco, archivo, indent=4, ensure_ascii=False)
-
 
 # Menu principal del modulo de ventas.
 
-def menu_ventas():
+def menu_ventas(datos_actualizados):
     while True:
-        datos_actualizados = cargar_datos()
-
         console.print("\n")
         menu_texto = (
             "[bold cyan][1][/bold cyan] Registrar una venta nueva\n"
@@ -64,17 +30,14 @@ def menu_ventas():
         match opcion_sel:
             case "1":
                 registrar_venta(datos_actualizados)
-                guardar_datos(datos_actualizados)
             case "2":
                 listar_ventas(datos_actualizados)
             case "3":
                 buscar_venta(datos_actualizados)
             case "4":
                 modificar_estado_pago(datos_actualizados)
-                guardar_datos(datos_actualizados)
             case "5":
                 eliminar_venta(datos_actualizados)
-                guardar_datos(datos_actualizados)
             case "9":
                 console.print("\n[bold green]✅ Volviendo al menú principal...[/bold green]")
                 break
@@ -87,7 +50,7 @@ def menu_ventas():
 def registrar_venta(datos_actualizados):
     lista_ventas = datos_actualizados.get("ventas", [])
     lista_autos = datos_actualizados.get("autos", [])
-    dic_clientes = datos_actualizados.get("clientes", {})
+    lista_clientes = datos_actualizados.get("clientes", [])
     lista_vendedores = datos_actualizados.get("vendedores", [])
 
     console.print("\n─── REGISTRAR NUEVA VENTA ───", style="bold blue")
@@ -141,7 +104,7 @@ def registrar_venta(datos_actualizados):
         console.print("[bold red]❌ Este auto ya fue vendido previamente.[/bold red]")
         return
 
-    if not dic_clientes:
+    if not lista_clientes:
         console.print("[bold yellow]⚠ No hay clientes registrados en el sistema todavía.[/bold yellow]")
         return
 
@@ -151,7 +114,9 @@ def registrar_venta(datos_actualizados):
     tabla_clientes.add_column("Nombre Completo")    
     tabla_clientes.add_column("Localidad")
 
-    for cliente in dic_clientes.values():
+    clientes = lista_clientes.values() if isinstance(lista_clientes, dict) else lista_clientes
+
+    for cliente in clientes:
         tabla_clientes.add_row(
             str(cliente["id_interno"]),
             cliente["dni"], 
@@ -169,8 +134,8 @@ def registrar_venta(datos_actualizados):
     id_cliente = int(id_cliente_str)
 
     clientes_encontrados = 0
-    for id_str in dic_clientes.keys():
-        if int(id_str) == id_cliente:
+    for cliente in lista_clientes:
+        if cliente["id_interno"] == id_cliente:  # VER BIEN ACA LO QUE TIENE QUE IR
             clientes_encontrados = 1
             break
             
@@ -189,7 +154,11 @@ def registrar_venta(datos_actualizados):
 
     for vendedor in lista_vendedores:
         if vendedor.get("estado") == "activo":
-            tabla_vendedores.add_row(str(vendedor["id"]), vendedor["nombre_completo"], f"{vendedor['comision_porcentaje']}%")
+            tabla_vendedores.add_row(
+                str(vendedor["id"]), 
+                vendedor["nombre_completo"], 
+                f"{vendedor['comision_porcentaje']}%"
+            )
             
     console.print("\n")
     console.print(tabla_vendedores)
@@ -231,7 +200,7 @@ def registrar_venta(datos_actualizados):
         "id_auto": id_auto,
         "id_cliente": id_cliente,
         "id_vendedor": id_vendedor,
-        "fecha_venta": date.today(), 
+        "fecha_venta": str(date.today()), 
         "precio_final": precio_final,
         "forma_pago": forma_pago,
         "estado_pago": estado_pago
@@ -260,14 +229,19 @@ def listar_ventas(datos_actualizados):
     table.add_column("Estado Pago", justify="center", style="yellow")
 
     for venta in lista_ventas:
-        fecha_str = venta["fecha_venta"].strftime("%Y-%m-%d")
+        if isinstance(venta["fecha_venta"], str):
+            fecha_objeto = date.fromisoformat(venta["fecha_venta"])
+        else:
+            fecha_objeto = venta["fecha_venta"]
+            
+        fecha_str = fecha_objeto.strftime("%Y-%m-%d")
         
         table.add_row(
             str(venta["id"]),
             str(venta["id_auto"]),
             str(venta["id_cliente"]),
             str(venta["id_vendedor"]),
-            fecha_str,
+           fecha_str,
             f"${venta['precio_final']}",
             venta["forma_pago"],
             venta["estado_pago"]
@@ -306,7 +280,7 @@ def buscar_venta(datos_actualizados):
         case "2":
             dni_buscar = input("Ingrese el DNI del cliente: ").strip()
             id_cliente_encontrado = None
-            for cliente in datos_actualizados.get("clientes", {}).values():
+            for cliente in datos_actualizados.get("clientes", []):
                 if cliente["dni"] == dni_buscar:
                     id_cliente_encontrado = cliente["id_interno"]
                     break
@@ -335,7 +309,13 @@ def buscar_venta(datos_actualizados):
 # Funcion para mostrar el detalle de una venta.
 
 def imprimir_detalle_venta(venta):
-    fecha_str = venta["fecha_venta"].strftime("%Y-%m-%d")
+    if isinstance(venta["fecha_venta"], str):
+        fecha_objeto = date.fromisoformat(venta["fecha_venta"])
+    else:
+        fecha_objeto = venta["fecha_venta"]
+        
+    fecha_str = fecha_objeto.strftime("%Y-%m-%d")
+
     detalle = (
         f"🚗 [bold]Auto (ID):[/bold] {venta['id_auto']}\n"
         f"👤 [bold]Cliente (ID):[/bold] {venta['id_cliente']}\n"

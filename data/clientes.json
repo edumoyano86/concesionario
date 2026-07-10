@@ -1,0 +1,38 @@
+[
+    {
+        "id_interno": 1,
+        "nombre": "Julian",
+        "apellido": "Matzkin",
+        "dni": "12345678",
+        "email": "julian.matzkin@email.com",
+        "telefono": "1144556677",
+        "localidad": "Mendoza"
+    },
+    {
+        "id_interno": 2,
+        "nombre": "Oracio",
+        "apellido": "Garc\u00eda",
+        "dni": "23456789",
+        "email": "oracio.garcia@email.com",
+        "telefono": "1155667788",
+        "localidad": "Santa Fe"
+    },
+    {
+        "id_interno": 3,
+        "nombre": "Tiziano",
+        "apellido": "Bertoni",
+        "dni": "34567890",
+        "email": "tiziano.bertoni@email.com",
+        "telefono": "1166778899",
+        "localidad": "Buenos Aires"
+    },
+    {
+        "id_interno": 4,
+        "nombre": "Ana",
+        "apellido": "Benitez",
+        "dni": "45678901",
+        "email": "ana.benitez@email.com",
+        "telefono": "1177889900",
+        "localidad": "San Juan"
+    }
+]

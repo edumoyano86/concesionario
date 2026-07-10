@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "nombre_completo": "Eduardo Moyano",
+        "comision_porcentaje": 5,
+        "estado": "activo"
+    },
+    {
+        "id": 2,
+        "nombre_completo": "Juan Romero",
+        "comision_porcentaje": 8,
+        "estado": "inactivo"
+    }
+]

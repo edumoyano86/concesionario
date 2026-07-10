@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "id_auto": 12,
+        "id_cliente": 4,
+        "id_vendedor": 1,
+        "fecha_venta": "2026-06-27",
+        "precio_final": 3000000000,
+        "forma_pago": "financiado",
+        "estado_pago": "cobrado"
+    },
+    {
+        "id": 3,
+        "id_auto": 13,
+        "id_cliente": 4,
+        "id_vendedor": 1,
+        "fecha_venta": "2026-06-29",
+        "precio_final": 30000000,
+        "forma_pago": "financiado",
+        "estado_pago": "pendiente"
+    }
+]
